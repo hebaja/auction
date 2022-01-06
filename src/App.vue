@@ -1,9 +1,5 @@
 <template>
   <div id="app">
-<<<<<<< HEAD
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-=======
     
     <nav class="blue darken-4">
       <div class="nav-wrapper">
@@ -20,11 +16,7 @@
       </div>
     </nav>
 
-<<<<<<< HEAD
-    <a href="" class="btn" @click.prevent="sendTestMessage">send test message</a>
-=======
     <div class="container">
->>>>>>> 1c8eac4 (fixing after rebase)
 
       <div v-show="!thereIsNoUser && !query.playerId">
         <auctioneer-panel :auctioneer="auctioneer" :groupActiveArray="groupActiveArray" :accessToken="accessToken" @updateGroupActive="updateGroupActive($event)"/>
@@ -41,14 +33,10 @@
 
     </div>
 
->>>>>>> 621cc16 (fixing after rebase 2)
   </div>
 </template>
 
 <script>
-<<<<<<< HEAD
-import HelloWorld from './components/HelloWorld.vue'
-=======
 import AuctioneerPanel from './components/AuctioneerPanel.vue'
 import GroupPlayerPanel from './components/GroupPlayersPanel.vue'
 import SigninPanel from './components/SigninPanel.vue'
@@ -59,22 +47,9 @@ import axios from 'axios';
 import { initializeApp } from "firebase/app";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-import { getMessaging, getToken } from "firebase/messaging";
 
-
-
-=======
->>>>>>> 9454283 (commit for heroku)
-=======
-=======
-
->>>>>>> 6788a07 (testing rebase)
 console.log(process.env.VUE_APP_NAME)
 
->>>>>>> 22589b4 (working on environment variables)
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
   authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
@@ -87,48 +62,9 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 
-<<<<<<< HEAD
-
-const messaging = getMessaging();
-getToken(messaging, { vapidKey: 'BLI8Ih_57XFC527KdjoPoQnCXDKU8l7jVD15xkINcUN0ZDL6ppg2m1i9TmfC3PAruwjKzZbsm2Ia3L7zBOMOrmU' }).then((currentToken) => {
-  if (currentToken) {
-    // Send the token to your server and update the UI if necessary
-    // ...
-    console.log(currentToken)
-  } else {
-    // Show permission request UI
-    console.log('No registration token available. Request permission to generate one.');
-    // ...
-  }
-}).catch((err) => {
-  console.log('An error occurred while retrieving token. ', err);
-  // ...
-});
-
-
-
-
-// const messaging = getMessaging(firebaseApp)
-
-// messaging.subscribeToTopic('hebajabackup@gmail.com')
-//   .then((response) => {
-//     // See the MessagingTopicManagementResponse reference documentation
-//     // for the contents of response.
-//     console.log('Successfully subscribed to topic:', response);
-//   })
-//   .catch((error) => {
-//     console.log('Error subscribing to topic:', error);
-//   });
->>>>>>> ee34edc (working on environment variables)
-
-=======
->>>>>>> 1c8eac4 (fixing after rebase)
 export default {
   name: 'App',
   components: {
-<<<<<<< HEAD
-    HelloWorld
-=======
     AuctioneerPanel, 
     GroupPlayerPanel,
     SigninPanel,
@@ -164,16 +100,16 @@ export default {
   },
 
   created() {
-    let uri = window.location.href.split('?');
+    let uri = window.location.href.split('?')
       if(uri.length == 2) {
-        let vars = uri[1].split('&');
-        let getVars = {};
-        let tmp = '';
+        let vars = uri[1].split('&')
+        let getVars = {}
+        let tmp = ''
         vars.forEach(function(v) {
-          tmp = v.split('=');
+          tmp = v.split('=')
           if(tmp.length == 2)
-            getVars[tmp[0]] = tmp[1];
-        });
+            getVars[tmp[0]] = tmp[1]
+        })
         this.query = getVars
       }
 
@@ -189,7 +125,6 @@ export default {
               this.thereIsNoUser = false
               this.email = null
               this.password = null
-
               this.accessToken = user.accessToken
 
               if(!this.groupActiveArray.length && this.auctioneer.groupPlayers) {
@@ -290,24 +225,12 @@ export default {
       }).catch(message => console.log(message))
     }
 
->>>>>>> 621cc16 (fixing after rebase 2)
   }
 
 }
 </script>
 
 <style>
-<<<<<<< HEAD
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
-=======
 table {
     border-collapse: collapse;
     width: 80%;
@@ -456,4 +379,3 @@ table {
   }
 
 </style>
->>>>>>> 621cc16 (fixing after rebase 2)
