@@ -27,7 +27,7 @@ Choose a lot and determine its initial bid and the players are now allowed to gi
 The player who gave the highest bid will acquire the lot. When all lots are sold, you can finish the auction and check the score, the winner is the player who bought more correct lots.
 
 ## Link for API
-[https://github.com/hebaja/auction-api](https://github.com/hebaja/auction-api)
+[https://github.com/hebaja/auction_api](https://github.com/hebaja/auction_api)
 
 ## Project setup
 ```
