@@ -25,6 +25,7 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { getMessaging, getToken } from "firebase/messaging";
 
 
@@ -32,6 +33,9 @@ import { getMessaging, getToken } from "firebase/messaging";
 =======
 >>>>>>> 9454283 (commit for heroku)
 =======
+=======
+
+>>>>>>> 6788a07 (testing rebase)
 console.log(process.env.VUE_APP_NAME)
 
 >>>>>>> 22589b4 (working on environment variables)
