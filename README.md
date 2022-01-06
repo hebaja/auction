@@ -51,9 +51,3 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-
-## How to Try it
-The project is currently deployed at [https://joy-auction.herokuapp.com/](https://joy-auction.herokuapp.com/). You must first register your account using a valid e-mail. After that, you have to register your auctions and lots (you must check whether the lot's description is correct or not). Then, You have to register groups of players, a link will be created for each player after the group is created, which should be given to each player. Finally, you must activate all the groups of players which will be able to play. Choose a lot and determine its initial bid and the players are now allowed to give their bids. You should decide when it is enough and close the lot. The player who gave the highest bid will acquire the lot. When all lots are sold, you can finish the auction and check the score, the winner is the player who bought more correct lots.
-
-## Link for API
-[https://github.com/hebaja/auction_api](https://github.com/hebaja/auction_api)
