@@ -34,4 +34,10 @@ The project is currently deployed at [https://joy-auction.herokuapp.com/](https:
 ## Link for API
 [https://github.com/hebaja/auction-api](https://github.com/hebaja/auction-api)
 
+<<<<<<< HEAD
 >>>>>>> f214d69 (adding images)
+=======
+![This is an image](https://github.com/hebaja/auction/blob/master/src/assets/auction_images/register_auction.png)
+
+
+>>>>>>> de8146e (adding images)
