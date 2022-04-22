@@ -1,39 +1,105 @@
 <!DOCTYPE html>
 <html lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  </body>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<link rel="icon" href="<%= BASE_URL %>favicon.ico">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<title><%= htmlWebpackPlugin.options.title %></title>
+	</head>
+	<body>
+		<noscript>
+			<strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+		</noscript>
+		<div id="app"></div>
+		<!-- built files will be auto injected -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	</body>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var elems = document.querySelectorAll('.collapsible');
-      var elems1 = document.querySelectorAll('.tooltipped');
-      var elems2 = document.querySelectorAll('.autocomplete');
-      var instances = M.Collapsible.init(elems, {accordion: true});
-      var instances1 = M.Tooltip.init(elems1, {position: 'top'}); 
-      var instances2 = M.Autocomplete.init(elems2); 
-    });
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	var elems = document.querySelectorAll('.collapsible');
+	var elems1 = document.querySelectorAll('.tooltipped');
+	var elems2 = document.querySelectorAll('.autocomplete');
+	var elems3 = document.querySelectorAll('.sidenav');
+	var instances = M.Collapsible.init(elems, {accordion: true});
+	var instances1 = M.Tooltip.init(elems1, {position: 'top'}); 
+	var instances2 = M.Autocomplete.init(elems2); 
+	var instances3 = M.Sidenav.init(elems3);
+});
 
-  </script>
-  <style>
-    .inline-icon {
-		  vertical-align: sub;
-		  font-size: 18px !important;
-	  }
+</script>
+<style>
+.inline-icon {
+	vertical-align: sub;
+	font-size: 20px !important;
+}
+/* label color */
+.input-field label {
+	color: #0d47a1;
+}
+/* label focus color */
+.input-field input[type=text]:focus + label {
+	color: #0d47a1 !important;
+}
+.input-field input[type=email]:focus + label {
+	color: #0d47a1 !important;
+}
+.input-field input[type=password]:focus + label {
+	color: #0d47a1 !important;
+}
+.input-field input[type=number]:focus + label {
+	color: #0d47a1 !important;
+}
 
-  </style>
+/* label underline focus color */
+.input-field input[type=text]:focus {
+	border-bottom: 1px solid #0d47a1 !important;
+	box-shadow: 0 1px 0 0 #0d47a1 !important;
+}
+.input-field input[type=email]:focus {
+	border-bottom: 1px solid #0d47a1 !important;
+	box-shadow: 0 1px 0 0 #0d47a1 !important;
+}
+.input-field input[type=password]:focus {
+	border-bottom: 1px solid #0d47a1 !important;
+	box-shadow: 0 1px 0 0 #0d47a1 !important;
+}
+.input-field input[type=number]:focus {
+	border-bottom: 1px solid #0d47a1 !important;
+	box-shadow: 0 1px 0 0 #0d47a1 !important;
+}
+
+/* valid color */
+.input-field input[type=text].valid {
+	border-bottom: 1px solid #000 !important;
+	box-shadow: 0 1px 0 0 #000 !important;
+}
+/* invalid color */
+.input-field input[type=text].invalid {
+	border-bottom: 1px solid #000 !important;
+	box-shadow: 0 1px 0 0 #000 !important;
+}
+/* icon prefix focus color */
+.input-field .prefix.active {
+	color: #0d47a1 !important;
+}
+
+.input-field-fail-error {
+	border-bottom: 1px solid #be0606 !important;
+	box-shadow: 0 1px 0 0 #be0606 !important;
+}
+
+.input-field-fail-error:focus {
+	border-bottom: 1px solid #be0606 !important;
+	box-shadow: 0 1px 0 0 #be0606 !important;
+}
+
+.icon-input-field-fail-error {
+	color:  #be0606;
+}
+
+</style>
 </html>

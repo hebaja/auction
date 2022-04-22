@@ -1,30 +1,27 @@
 <template>
-
-  <a href="" :class="buttonColor" class="app-button waves-effect waves-light btn-small white-text">{{ label }}</a>
-    
+	<a id="app-button" href="" :class="buttonColor" class="app-button waves-effect waves-light btn-small white-text">{{ label }}<slot></slot></a>
 </template>
 
 <script>
-
-  export default {
+export default {
+	name: 'app-button',
     props: ['label', 'category'],
     computed: {
-      buttonColor() {
-        if(this.category == 'default' || !this.category) return 'blue darken-4'
-        if(this.category == 'edit') return 'yellow darken-4'
-        if(this.category == 'delete') return 'red darken-4'
-        if(this.category == 'open') return 'blue'
-        return 'blue darken-4'
-      }
+		buttonColor() {
+			if(this.category == 'default' || !this.category) return 'blue darken-4'
+			if(this.category == 'edit') return 'yellow darken-4'
+			if(this.category == 'delete') return 'red darken-4'
+			if(this.category == 'open') return 'blue'
+			if(this.category == 'cancel') return 'green darken-4'
+			return 'blue darken-4'
+		}
     }
-
-  }
-
+}
 </script>
 
 <style scoped>
-  .app-button {
-    margin-right: .5em;
-  }
+.app-button {
+	margin-right: .5em;
+}
 
 </style>

@@ -1,167 +1,298 @@
 <template>
-  <div id="signin">
-    <div v-show="signInMode">
-      <div class="row">
-        <h4 class="center-align col s12" v-show="!auctioneerId">Sign in</h4>
-        <div v-show="errorMessage" class="center-align col s12">
-          <p class="red-text">{{ errorMessage }}</p> 
-        </div>
-        <div v-show="verificationEmailSentMessage" class="center-align col s12">
-          <p class="green-text">{{ verificationEmailSentMessage }}</p>
-        </div>
-        <div v-show="recoverPasswordEmailSentMessage" class="center-align col s12">
-          <p class="green-text">{{ recoverPasswordEmailSentMessage }}</p>
-        </div>
-      </div>
-      <form v-on:submit.prevent="signin" v-show="!auctioneerId" style="margin-top: -1.5em;">
-        <div class="row center-align">
-          <div class="input-field col s12 m10 l8 offset-m1 offset-l2">
-            <i class="material-icons prefix">mail_outline</i>
-            <input type="email" id="autocomplete-email-input" class="autocomplete" v-model="email">
-            <label for="autocomplete-email-input">Email</label>
-          </div>
-          <div class="input-field col s12 m10 l8 offset-m1 offset-l2">
-            <i class="material-icons prefix">lock_outline</i>
-            <input type="password" v-model="password">
-            <label>Password</label>
-          </div>
-          <button class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 waves-effect waves-light btn-small button-activate blue darken-4" type="submit">Sign in</button> 
-          <div class="col s12" style="margin-top: 1.5em;">
-            <a href="" @click.prevent="changeToSignUpMode" style="margin-top: 1em;">Sign up</a>
-          </div>
-          <div class="col s12" style="margin-top: 1em;"> 
-            <a href="" @click.prevent="changeToForgotPasswordMode"  style="margin-top: 1em;">Forgot password?</a>
-          </div>
-        </div>
-      </form>
-    </div>
-    <signup-panel v-show="signUpMode" @verifyEmailSent='verifyEmailSent($event)'/>    
-    <forgot-password-panel v-show="forgotPasswordMode" @recoverPasswordEmailSent='recoverPasswordEmailSent($event)' />
-  </div>
+	<div id="signin">
+		<div class="row" style="margin-top: 2em;">
+			
+			<div class="row">
+				<div class="col s10 m8 offset-s1 offset-m2"
+					@mouseover="mouseOverButton('google')" 
+					@mouseleave="mouseLeaveButton('google')">
+					<gb-social-button
+						network="google"
+						theme="dark"
+						size="medium"
+						:full-width="true"
+						:loading="googleButton.loading"
+						:disabled="googleButton.disabled"
+						:iconTheme="googleButton.iconTheme"
+						:class="googleButton.background"
+						@click="googleSignIn">
+							Continue with Google
+					</gb-social-button>
+				</div>
+				<div class="col s10 m8 offset-s1 offset-m2"
+					style="margin-top: .5em;"
+					@mouseover="mouseOverButton('facebook')" 
+					@mouseleave="mouseLeaveButton('facebook')">
+					<gb-social-button
+						network="facebook"
+						theme="dark"
+						size="medium"
+						:full-width="true"
+						:loading="facebookButton.loading"
+						:disabled="facebookButton.disabled"
+						:iconTheme="facebookButton.iconTheme"
+						:class="facebookButton.background"
+						@click="facebookSignin">
+							Continue with Facebook
+					</gb-social-button>
+				</div>
+			</div>
+			<hr class="col s10 m8 offset-s1 offset-m2"/>
+			<div v-show="errorMessage" class="center-align col s12">
+				<p class="red-text">{{ errorMessage }}</p> 
+			</div>
+			<div v-show="message" class="center-align col s12">
+				<p class="green-text">{{ message }}</p> 
+			</div>
+			<h5 class="center-align col s12" v-show="!auctioneerId">Sign in with e-mail</h5>
+			<form v-on:submit.prevent="signin">
+				<div class="row center-align">
+					<div class="input-field col s12 m10 l8 offset-m1 offset-l2">
+						<i class="material-icons prefix">mail_outline</i>
+						<input type="email" id="autocomplete-email-input" class="autocomplete" v-model="email">
+						<label for="autocomplete-email-input">Email</label>
+					</div>
+					<div class="input-field col s12 m10 l8 offset-m1 offset-l2">
+						<i class="material-icons prefix">lock_outline</i>
+						<input type="password" v-model="password">
+						<label>Password</label>
+					</div>
+					<button 
+						class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 waves-effect waves-light btn-small button-activate blue darken-4"
+						type="submit"
+						:disabled="disableButton">
+							Sign in
+					</button>
+					<div class="col s1">
+						<grid-loader :loading="loader.loading" :color="loader.color" :size="loader.size" />
+					</div>
+					<div class="col s12" style="margin-top: 1.5em;">
+						<router-link to="/signup" style="margin-top: 1em;">Sing up with e-mail</router-link>
+					</div>
+					<div class="col s12" style="margin-top: 1em;"> 
+						<router-link to="/forgot-password" style="margin-top: 1em;">Forgot password?</router-link>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </template>
 
 <script>
-  
-  import axios from 'axios'
-  import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth"
+import { getAuth,
+		signInWithEmailAndPassword,
+		signInWithPopup,
+		GoogleAuthProvider,
+		FacebookAuthProvider,
+		// sendEmailVerification,
+		signOut } 
+	from "firebase/auth"
+import GridLoader from "vue-spinner/src/GridLoader.vue";
 
-  import SignupPanel from './SignupPanel.vue'
-  import ForgotPasswordPanel from './ForgotPasswordPanel.vue'
+export default {
+	name: 'signin',
+	data () {
+		return {
+			color: 'color',
+			email: null,
+			password: null,
+			message: '',
+			errorMessage: null,
+			disableButton: false,
+			loader: {
+				color: '#0d47a1',
+				size: '7px',
+				loading: false,
+			},
+			googleButton: {
+				iconTheme: 'color',
+				background: '',
+				loading: false,
+				disabled: false
+			},
+			facebookButton: {
+				iconTheme: 'color',
+				background: '',
+				loading: false,
+				disabled: false
+			},
+		}
+	},
+	components: {
+		GridLoader
+	},
+	props: ['auctioneerId'],
+	methods : {
+		signin: function() {
+			this.errorMessage = null
+			this.verificationEmailSentMessage = null
+			const auth = getAuth()
+			this.disableButton = true
+			this.loader.loading = true
 
-  export default {
+			signInWithEmailAndPassword(auth, this.email, this.password)
+			.then((userCredential) => {
+				const user = userCredential.user;
+				if(user.emailVerified) {
+					user.getIdToken(true)
+					.then((idToken) => {
+						this.$store.dispatch('signin', idToken)
+						.then(() => {
+							this.email = null
+							this.password = null
+							this.redirectAuctioneer()
+						})
+						.catch((error) => {
+							console.log(error)
+							this.errorMessage = error
+						})
+						this.disableButton = false
+						this.loader.loading = false
+					}).catch(error => {
+						this.errorMessage = error
+						this.signOut(auth)
+						this.disableButton = false
+						this.loader.loading = false
+					})
+				} else {
+					console.log('email not verified')
+					this.errorMessage = 'You must verify your e-mail to sign in.'
+					this.disableButton = false
+					this.loader.loading = false								
+				}
+			}).
+			catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
 
-    name: 'signin',
-    data () {
-      return {
-        email: null,
-        password: null,
-        errorMessage: null,
-        signInMode: true,
-        signUpMode: false,
-        forgotPasswordMode: false,
-        verificationEmailSentMessage: null,
-        recoverPasswordEmailSentMessage: null
-      }
-    },
-    components: { 
-      'signup-panel': SignupPanel, 
-      'forgot-password-panel': ForgotPasswordPanel
-    },
-    props: ['auctioneerId'],
-    methods : {
-      signin: function() {
-        this.errorMessage = null
-        this.verificationEmailSentMessage = null
-        const auth = getAuth()
+				console.log(errorCode)
+				console.log(errorMessage)
 
-        signInWithEmailAndPassword(auth, this.email, this.password)
-        .then((userCredential) => {
+				if(errorCode === 'auth/missing-email') {
+					this.errorMessage = 'You must inform an e-mail address.'
+				}
 
-          const user = userCredential.user;
+				if(errorCode === 'auth/internal-error' && !this.password) {
+					this.errorMessage = 'You must inform your password.'
+				}
 
-          if(user.emailVerified) {
-            user.getIdToken(true).then(idToken => {
+				if(errorCode === 'auth/user-not-found') {
+					this.errorMessage = 'Auctioneer not found.'
+				}
 
-            axios.post('https://hebaja-auction-api.herokuapp.com/api/firebase-auth', idToken)
-              .then((response) => {
-                this.auctioneer = response.data
-                this.email = null
-                this.password = null
-              }).catch(error => {
-                this.errorMessage = error
-                this.signOut(auth)
-              })
+				if(errorCode === 'auth/wrong-password') {
+					this.errorMessage = 'Wrong password.'
+					
+				}
+				if(errorCode === 'auth/too-many-requests') {
+					this.errorMessage = 'Your account has been temporarily disabled. Please try again later.'
+				}
+				this.disableButton = false
+				this.loader.loading = false
+			});
+		},
+		googleSignIn() {
+			const auth = getAuth()
+			const provider = new GoogleAuthProvider();
+			this.googleButton.loading = true
+			this.googleButton.disabled = true
+			this.socialSignin(auth, provider, this.googleButton)
+		},
+		facebookSignin() {
+			const auth = getAuth()
+			const provider = new FacebookAuthProvider()
+			this.facebookButton.loading = true
+			this.facebookButton.disabled = true
+			this.socialSignin(auth, provider, this.facebookButton)
+		},
+		socialSignin(auth, provider, button) {
+			signInWithPopup(auth, provider)
+			.then((result) => {
+				const user = result.user
+				console.log(user)
 
-            }).catch(error => {
-              this.errorMessage = error
-              this.signOut(auth)
-            })
+				console.log(user.emailVerified)
 
-          } else {
-            console.log('email not verified')
-            this.errorMessage = 'You must verify your e-mail to sign in.'
-          }
+				user.getIdToken(true)
+				.then((idToken) => {
+					this.$store.dispatch('signin', idToken)
+					.then(() => {
+						this.redirectAuctioneer()
+					})
+					.catch((error) => {
+						console.log(error)
+						this.errorMessage = error
+					})
+				})
+				.catch((error) => {
+					console.log(error)
+				})
 
-        }).catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
+				button.loading = false
+				button.disabled = false
 
-          console.log(errorCode)
-          console.log(errorMessage)
+			}).catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+				const email = error.email;
+				const credential = GoogleAuthProvider.credentialFromError(error);
 
-          if(errorCode === 'auth/missing-email') {
-            this.errorMessage = 'You must inform an e-mail address.'
-          }
+				console.log(errorCode)
+				console.log(errorMessage)
+				console.log(email)
+				console.log(credential)
+				button.loading = false
+				button.disabled = false
 
-          if(errorCode === 'auth/internal-error' && !this.password) {
-            this.errorMessage = 'You must inform your password.'
-          }
+				if(errorCode == 'auth/account-exists-with-different-credential') {
+					this.errorMessage = 'This account has been registered using another credential'
+				} else {
+					this.errorMessage = errorMessage
+				}
 
-          if(errorCode === 'auth/user-not-found') {
-            this.errorMessage = 'Auctioneer not found.'
-          }
-
-          if(errorCode === 'auth/wrong-password') {
-            this.errorMessage = 'Wrong password.'
-          }
-        });
-      },
-      modeChanged: function(data) {
-        this.signUpMode = data
-      },
-      verifyEmailSent: function(data) {
-        this.email = null
-        this.password = null
-        this.errorMessage = null
-        this.signInMode = true
-        this.signUpMode = false
-        this.recoverPasswordEmailSentMessage = null
-        this.verificationEmailSentMessage = 'An e-mail has been sent to ' + data + '. Check your inbox to complete register.'
-      },
-      recoverPasswordEmailSent: function(data) {
-        this.email = null
-        this.password = null
-        this.errorMessage = null
-        this.signInMode = true
-        this.forgotPasswordMode = false
-        this.verificationEmailSentMessage = null
-        this.recoverPasswordEmailSentMessage = 'An e-mail has been sent to ' + data + '. Check your inbox to recover your password.'
-      },
-      changeToSignUpMode: function() {
-        this.signInMode = false
-        this.signUpMode = true
-      },
-      changeToForgotPasswordMode: function() {
-        this.signInMode = false
-        this.forgotPasswordMode = true
-      },
-      signOut: function(auth) {
-        signOut(auth).then(() => console.log('signing out')).catch((error) => console.log(error))
-      }
-    }
-  }
+				
+			})
+		},
+		redirectAuctioneer() {
+			this.$router.push({name: 'auctioneer'})
+		},
+		signOut: function(auth) {
+			signOut(auth).then(() => console.log('signing out')).catch((error) => console.log(error))
+		},
+		mouseOverButton(network) {
+			switch(network) {
+				case 'facebook':
+					this.facebookButton.iconTheme = 'white'
+					this.facebookButton.background = 'blue darken-4 white-text'
+					break
+				case 'google':
+					this.googleButton.iconTheme = 'white'
+					this.googleButton.background = 'red darken-1 white-text'
+					break
+				case 'twitter':
+					this.twitterButton.iconTheme = 'white'
+					this.twitterButton.background = 'blue white-text'
+			}	
+			
+		},
+		mouseLeaveButton(network) {
+			switch(network) {
+				case 'facebook':
+					this.facebookButton.iconTheme = 'color'
+					this.facebookButton.background = ''
+					break
+				case 'google':
+					this.googleButton.iconTheme = 'color'
+					this.googleButton.background = ''
+					break
+				case 'twitter':
+					this.twitterButton.iconTheme = 'color'
+					this.twitterButton.background = ''
+			}
+		}
+	}
+}
 </script>
 
 <style scoped>
-
 </style>
