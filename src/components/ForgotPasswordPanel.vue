@@ -9,7 +9,7 @@
 		<div v-if="message" class="col s12">
 			<p class="green-text text-darken-4 center-align">{{ message }}</p>
 		</div>
-		<form v-on:submit.prevent='send' style="margin-top: -2em;">
+		<form v-on:submit.prevent='send'>
 			<div class="row center-align">
 			<div class="input-field col col s12 m10 l8 offset-m1 offset-l2">
 				<i class="material-icons prefix">email</i>
