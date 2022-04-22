@@ -68,12 +68,11 @@ export default {
 				const auth = getAuth();
 				sendPasswordResetEmail(auth, this.email)
 				.then(() => {
-					this.$emit('recoverPasswordEmailSent', this.email)
+					this.message = 'An e-mail has been sent to ' + this.email + '. Check your inbox to reset your password.'
 					this.disableButton = false
 					this.loader.loading = false
 					this.errorMessage = ''
 					this.email = null
-					this.message = 'An e-mail has been sent to ' + this.email + '. Check your inbox to reset your password.'
 				})
 				.catch(error => {
 					console.log(error)
