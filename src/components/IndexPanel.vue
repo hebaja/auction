@@ -3,44 +3,63 @@
 		<div class="col s12">
 			<p id="home-main-text" class="blue-text text-darken-4 center-align">Auctions made fun!</p>
 		</div>
-		<div class="col s12">
-			<h5>Latest auctions</h5>
-			<ul class="collection col s12">
-				<a href="" v-for="auction in auctions" :key="auction.id" class="collection-item avatar" @click.prevent="openAuction(auction.id)">
-					<img :src="[auction.auctioneerPictureUrl ? auction.auctioneerPictureUrl : '/images/logo.svg']" alt="" class="circle">
-					<span class="title blue-text text-darken-4"><b>{{ auction.title }}</b></span>
-					<p class="blue-text text-darken-4">
-						Lots: {{ auction.lotsQuantity}}
-						<br>
-						Created on {{ formatDate(auction.creationDate) }} by {{ auction.auctioneerName }}
-					</p>
-					<span class="new badge secondary-content blue darken-4"></span>
-				</a>
-			</ul>
-		</div>
-		<ul class="pagination">
-			<li 
-				:class="paginationPayload.first ? 'disabled disabled-link' : 'waves-effect'">
-					<a href="#!" @click.prevent="pageBack">
-						<i class="material-icons">chevron_left</i>
-					</a>
-			</li>
 
-			<li 
-				v-for="(item, index) in pagination"
-				:key="item.page"
-				class="waves-effect"
-				:class="item.class">
-					<a href="#!" @click.prevent="changePage(index)"><span :class="item.numberClass">{{ item.page }}</span></a>
-			</li>
-			
-			<li 
-				:class="paginationPayload.last ? 'disabled disabled-link' : 'waves-effect'">
-					<a href="#!" @click.prevent="pageForward">
-						<i class="material-icons">chevron_right</i>
+		<form v-on:submit.prevent="search" class="col s12" style="margin-top: .5em; margin-left: -.8em;">
+				<div class="input-field col s11">
+					<i class="material-icons prefix">search</i>
+					<input type="text" id="autocomplete-text-input" class="autocomplete" v-model="searchWord">
+					<label for="autocomplete-text-input">Search</label>
+				</div>
+				
+				<button 
+					class="col s1 waves-effect waves-light btn-small blue darken-4"
+					type="submit"
+					style="margin-top: 2em;"
+					:disabled="disableButton">
+						Go
+				</button>
+		</form>
+
+		<div class="col s12">
+			<div class="row">
+				<h5 class="col s12">Latest auctions</h5>
+				<ul class="collection col s12">
+					<a href="" v-for="auction in auctions" :key="auction.id" class="collection-item avatar" @click.prevent="openAuction(auction.id)">
+						<img :src="[auction.auctioneerPictureUrl ? auction.auctioneerPictureUrl : '/images/logo.svg']" alt="" class="circle">
+						<span class="title blue-text text-darken-4"><b>{{ auction.title }}</b></span>
+						<p class="blue-text text-darken-4">
+							Lots: {{ auction.lotsQuantity}}
+							<br>
+							Created on {{ formatDate(auction.creationDate) }} by {{ auction.auctioneerName }}
+						</p>
+						<span class="new badge secondary-content blue darken-4"></span>
 					</a>
-			</li>
-		</ul>
+				</ul>
+				<ul class="pagination col s12" style="margin-top: -.2em; margin-left: -1.8em;">
+					<li 
+						:class="paginationPayload.first ? 'disabled disabled-link' : 'waves-effect'">
+							<a href="#!" @click.prevent="pageBack">
+								<i class="material-icons">chevron_left</i>
+							</a>
+					</li>
+					<li 
+						v-for="(item, index) in pagination"
+						:key="item.page"
+						class="waves-effect"
+						:class="item.class">
+							<a href="#!" @click.prevent="changePage(index)"><span :class="item.numberClass">{{ item.page }}</span></a>
+					</li>
+					<li 
+						:class="paginationPayload.last ? 'disabled disabled-link' : 'waves-effect'">
+							<a href="#!" @click.prevent="pageForward">
+								<i class="material-icons">chevron_right</i>
+							</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		
 		<OverlayLoading :active="overlay.isLoading"
 			:can-cancel="false"
 			:is-full-page="overlay.fullPage"
@@ -61,6 +80,8 @@ export default {
 			pagination: [],
 			pageRequest: null,
 			pageSize: 10,
+			disableButton: false,
+			searchWord: '',
 			overlay: {
 				isLoading: false,
 				fullPage: true,
@@ -136,6 +157,9 @@ export default {
 					})
 				}
 			}
+		},
+		search() {
+			console.log(this.searchWord)
 		}
 	}
 }

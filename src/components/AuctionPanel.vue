@@ -229,7 +229,6 @@ export default {
 			.then((response) => {
 				this.auction = response.data
 				this.loader.loading = false
-				console.log(response.data)
 			})
 			.catch((error) => {
 				console.log(error)
