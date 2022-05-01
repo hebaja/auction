@@ -249,12 +249,11 @@ export default {
 				} else {
 					this.errorMessage = errorMessage
 				}
-
-				
 			})
 		},
 		redirectAuctioneer() {
-			this.$router.push({name: 'auctioneer'})
+			if(this.$route.query.redirect) this.$router.push({name: this.$route.query.redirect, params: this.$route.query.params})
+			else this.$router.push({name: 'auctioneer'})
 		},
 		signOut: function(auth) {
 			signOut(auth).then(() => console.log('signing out')).catch((error) => console.log(error))
@@ -273,7 +272,6 @@ export default {
 					this.twitterButton.iconTheme = 'white'
 					this.twitterButton.background = 'blue white-text'
 			}	
-			
 		},
 		mouseLeaveButton(network) {
 			switch(network) {

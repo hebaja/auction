@@ -1,50 +1,89 @@
 <template>
 	<div id="auctioneer">
-
-		<div v-if="errorMessage" class="col s12">
-			<p class="red-text center-align">{{ errorMessage }}</p>
-		</div>
-	
-		<div class="row">
-			<div class="auctioneer-collections col s12">
-				<ul class="collection with-header">
-					<li class="collection-header"><h5>Auctions</h5></li>
-					<li 
-						v-for="auction in auctioneer.auctions" 
-						:key="auction.id"
-						class="blue-text text-darken-4 collection-item">
-							<a href="" @click.prevent="openAuction(auction)">
-								<b>{{ auction.title }}</b> 
-							</a>
-							<a href="#" class="auctioneer-collections-link secondary-content"
-								v-tooltip.top="'Remove this auction'"
-								@click.prevent="showDeleteAuctionModal(auction)">
-								<i class="red-text text-darken-4 material-icons">delete</i>
-							</a>
-							<a href="#" class="auctioneer-collections-link secondary-content"
-								v-tooltip.top="'Edit this auction'"
-								@click.prevent="editAuction(auction)">
-									<i class="yellow-text text-darken-4 material-icons secondary-content">edit</i>
-							</a>
-							<a href=""
-								class="auctioneer-collections-link secondary-content" 
-								v-tooltip.top="'Open this auction'"
-								@click.prevent="openAuction(auction)">
-									<i class="blue-text text-darken-4 material-icons secondary-content">gavel</i>
-							</a>
-							<span v-if="auction.finished" class="secondary-content" v-tooltip.top="'This auction is finished'">
-								<i class="grey-text text-darken-1 material-icons">done_all</i>
-							</span>
-					</li>
-					<AppModal 
-						name="confirmDeleteAuctionModal"
-						message="Do you really want to remove this auction?"
-						confirmMessage="Delete"
-						@cancel-click="$modal.hide('confirmDeleteAuctionModal')"
-						@confirm-click="removeAuction"
-					/>
-				</ul>
+		<div class="row" style="margin-top: 1em;">
+			<div v-if="errorMessage" class="col s12">
+				<p class="red-text center-align">{{ errorMessage }}</p>
 			</div>
+			<Tabs>
+				<Tab title="My auctions">
+					<div id="auctions" class="auctioneer-collections col s12">
+						<ul class="collection with-header">
+							<li class="collection-header"><h5>Auctions</h5></li>
+							<li 
+								v-for="auction in auctioneer.auctions" 
+								:key="auction.id"
+								class="blue-text text-darken-4 collection-item">
+									<a href="" @click.prevent="openAuction(auction)">
+										<b>{{ auction.title }}</b> 
+									</a>
+									<a href="#" class="auctioneer-collections-link secondary-content"
+										v-tooltip.top="'Remove this auction'"
+										@click.prevent="showDeleteAuctionModal(auction)">
+										<i class="red-text text-darken-4 material-icons">delete</i>
+									</a>
+									<a href="#" class="auctioneer-collections-link secondary-content"
+										v-tooltip.top="'Edit this auction'"
+										@click.prevent="editAuction(auction)">
+											<i class="yellow-text text-darken-4 material-icons secondary-content">edit</i>
+									</a>
+									<a href=""
+										class="auctioneer-collections-link secondary-content" 
+										v-tooltip.top="'Open this auction'"
+										@click.prevent="openAuction(auction)">
+											<i class="blue-text text-darken-4 material-icons secondary-content">gavel</i>
+									</a>
+									<span v-if="auction.finished" class="secondary-content" v-tooltip.top="'This auction is finished'">
+										<i class="grey-text text-darken-1 material-icons">done_all</i>
+									</span>
+							</li>
+							<AppModal 
+								name="confirmDeleteAuctionModal"
+								message="Do you really want to remove this auction?"
+								confirmMessage="Delete"
+								@cancel-click="$modal.hide('confirmDeleteAuctionModal')"
+								@confirm-click="removeAuction"
+							/>
+						</ul>
+					</div>
+				</Tab>
+				<Tab title="My favorites">
+					<div class="auctioneer-collections col s12">
+						<ul class="collection with-header">
+							<li class="collection-header"><h5>My favorites</h5></li>
+							<li 
+								v-for="auction in auctioneer.favoriteAuctions" 
+								:key="auction.id"
+								class="blue-text text-darken-4 collection-item">
+									<a href="" @click.prevent="openAuction(auction)">
+										<b>{{ auction.title }}</b> 
+									</a>
+									<a href="#" class="auctioneer-collections-link secondary-content"
+										v-tooltip.top="'Remove from favorites'"
+										@click.prevent="confirmRemoveFavoriteModal(auction)">
+										<i class="red-text text-darken-4 material-icons">highlight_off</i>
+									</a>
+									<a href=""
+										class="auctioneer-collections-link secondary-content" 
+										v-tooltip.top="'Open this auction'"
+										@click.prevent="openAuction(auction)">
+											<i class="blue-text text-darken-4 material-icons secondary-content">gavel</i>
+									</a>
+									<span v-if="auction.finished" class="secondary-content" v-tooltip.top="'This auction is finished'">
+										<i class="grey-text text-darken-1 material-icons">done_all</i>
+									</span>
+							</li>
+							<AppModal 
+								name="confirmRemoveFavoriteModal"
+								message="Do you really want to unfavorite this auction?"
+								confirmMessage="Unfavorite"
+								@cancel-click="$modal.hide('confirmRemoveFavoriteModal')"
+								@confirm-click="removeFavorite"
+							/>
+						</ul>
+					</div>
+				</Tab>
+			</Tabs>
+
 			<div class="col s7 m5">
 				<app-button 
 					class="col s12"
@@ -139,7 +178,8 @@
 import { mapGetters } from 'vuex'
 import AppButton from './shared/AppButton.vue'
 import AppModal from './shared/AppModal.vue'
-
+import Tab from './shared/Tab.vue'
+import Tabs from './shared/Tabs.vue'
 import OverlayLoading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
@@ -150,6 +190,7 @@ export default {
 			auctioneer: null,
 			auctionToBeRemovedId: null,
 			groupToBeRemoved: null,
+			favoriteAuctionToBeRemoved: null,
 			players: {},
 			startingBid: [],
 			errors: [],
@@ -160,13 +201,14 @@ export default {
 				color: '#0d47a1',
 				loader: 'dots'
 			}
-			
 		}
     },
     components: {
 		AppButton,
 		AppModal,
-		OverlayLoading
+		OverlayLoading,
+		Tab,
+		Tabs
     },
 
     props: ['groupActiveArray', 'accessToken'],
@@ -176,6 +218,7 @@ export default {
 		this.$http.get('/api/auctioneer/auctions/' + this.auctioneer.id)
 		.then((response) => {
 			this.auctioneer = response.data
+			console.log(response.data)
 		})
 		.catch((error) => {
 			console.log(error)
@@ -212,7 +255,8 @@ export default {
 			let auction = {
 				title: '',
 				finished: false,
-				lots: lots
+				lots: lots,
+				publicAuction: false
 			}
 			this.$store.commit('DEFINE_EDIT_AUCTION', auction)
 			this.$router.push({name: 'edit-auction', params: {auction: auction}})
@@ -248,6 +292,36 @@ export default {
 				})
 			} else {
 				this.errorMessage = 'There was a problem when removing the auction'
+				this.overlay.isLoading = false
+			}
+		},
+		removeFavorite() {
+			this.overlay.isLoading = true
+			this.$modal.hide('confirmRemoveFavoriteModal')
+			if(this.favoriteAuctionToBeRemoved != null) {
+				let auctionForm = {
+					auctionId: this.favoriteAuctionToBeRemoved.id,
+					auctioneerId: this.storedAuctioneer.id
+				}
+				this.$http.post('/api/auction/remove-favorite', auctionForm)
+				.then((response) => {
+					this.auctioneer = response.data
+					this.favoriteAuctionToBeRemoved = null
+					this.overlay.isLoading = false
+				})
+				.catch((error) => {
+					console.log(error)
+					if(error.response) {
+						this.$notice['warning']({
+							title: 'Attention',
+							description: 'This auction has already beed removed from your favorites'
+						})
+					} else {
+						this.errorMessage = 'There was an error removing the auction from favorites'
+					}
+				})
+			} else {
+				this.errorMessage = 'There was a problem when removing the auction from favorites'
 				this.overlay.isLoading = false
 			}
 		},
@@ -297,6 +371,10 @@ export default {
 			this.auctionToBeRemoved = auction
             this.$modal.show('confirmDeleteAuctionModal')
         },
+		confirmRemoveFavoriteModal(auction) {
+			this.favoriteAuctionToBeRemoved = auction
+			this.$modal.show('confirmRemoveFavoriteModal')
+		},
 		showDeleteGroupModal(groupId) {
 			this.groupToBeRemovedId = groupId
 			this.$modal.show('confirmDeleteGroupModal')
@@ -313,7 +391,6 @@ export default {
 			})
 		},
 		copyAllPlayersLinks() {
-			console.log(this.players)
 			var listOfLinks = []
 			this.players.forEach(player => {
 				listOfLinks.push(`${player.playerName}: ${process.env.VUE_APP_DEFAULT_BASE_URL}/#/player?playerId=${player.id}`)
@@ -329,233 +406,16 @@ export default {
 		hideModal() {
             this.$modal.hide('modal');
         },
-
-
-
-
-
-	// 	startLot: function(auctioneerId, lotId, startingBid, auctionIndex, lotIndex) {
-	// 	if(!startingBid) {
-	// 		this.errors.push('Starting bid required.')
-	// 	} else if(this.groupActiveArray.length === 0) {
-	// 		this.errors.push('You must activate a group.')
-	// 	} else if(isNaN(startingBid)) {
-	// 		this.errors.push('You must input a valid bid.')
-	// 	} else {
-	// 		this.startLotObject.auctioneerId = auctioneerId
-	// 		this.startLotObject.lotId = lotId
-	// 		this.startLotObject.startingBid = startingBid
-	// 		this.$http.post('/api/auction/start-lot', this.startLotObject)
-	// 		.then(response => {
-	// 		this.errors.splice(0)
-	// 		var startedLot = response.data
-	// 		this.mutableAuctioneer.auctions[auctionIndex].lots.splice(lotIndex, 1, startedLot)
-	// 		if(startedLot.active) {
-	// 			this.thereIsAnActiveLot = true
-	// 			this.mutableActiveLot = startedLot
-	// 		}
-	// 		})
-	// 		.catch(error => {
-	// 		console.log(error)
-	// 		if(error == 'Error: Request failed with status code 400') {
-	// 			this.errors.push('Invalid value.')
-	// 			}
-	// 		})
-	// 	}
-	// 	},
-
-	// 	cancelLot: function(auctioneerId, lotId, auctionIndex, lotIndex) {
-	// 	this.sendLotObject.auctioneerId = auctioneerId
-	// 	this.sendLotObject.lotId = lotId
-	// 	let message = 'Do you want to reset this lot (all bids will be lost)?'
-	// 	let options = {
-	// 		okText: 'Reset',
-	// 		cancelText: 'Cancel'
-	// 	}
-	// 	this.$dialog.confirm(message, options)
-	// 		.then(() => {
-	// 		this.$http.post('/api/auction/cancel-lot', this.sendLotObject)
-	// 		.then(response => {
-	// 			this.startingBid[lotId] = null
-	// 			this.mutableAuctioneer.auctions[auctionIndex].lots.splice(lotIndex, 1, response.data)
-	// 			this.mutableActiveLot = null
-	// 			this.thereIsAnActiveLot = false
-	// 		}).catch((error) => {
-	// 			const errorMessage = error.message
-	// 			console.log(errorMessage)
-	// 		})
-	// 		}).catch(message => console.log(message))
-	// 	},
-
-	// 	finishLot: function(auctioneerId, lotId) {
-	// 	this.sendLotObject.auctioneerId = auctioneerId
-	// 	this.sendLotObject.lotId = lotId
-
-	// 	let message = 'Do you want to close and sell this lot?'
-	// 	let options = {
-	// 		okText: 'Sell',
-	// 		cancelText: 'Cancel'
-	// 	}
-
-	// 	this.$dialog.confirm(message, options)
-	// 		.then(() => {
-	// 		this.$http.post('/api/auction/finish-lot', this.sendLotObject)
-	// 		.then(response => {
-	// 			this.mutableAuctioneer = response.data
-	// 			this.mutableActiveLot = null
-	// 			this.thereIsAnActiveLot = false
-	// 			this.errors.splice(0)
-	// 			this.$emit("updateGroupActive", this.mutableAuctioneer.groupPlayers);
-	// 		}).catch((error) => {
-	// 			const errorMessage = error.message
-	// 			if(errorMessage == 'Request failed with status code 500') {
-	// 			this.errors.push('Server error.')
-	// 			} else {
-	// 			console.log(errorMessage)
-	// 			this.errors.push('This lot does not have any bid yet.')
-	// 			}
-
-				
-	// 		})
-	// 		}).catch(message => console.log(message))
-	// 	},
-
-	// 	lotCreated: function(event) {
-	// 		console.log(event)
-	// 	},
-
-	// 	auctionCreated: function(data) {
-	// 		this.mutableAuctioneer = data
-	// 	},
-
-	// 	update: function(auctionToUpdate, index) {
-
-	// 	var thereIsNoEmptyLotTitle = true
-	// 	var thereIsNoEmptyLotDescription = true
-
-	// 	auctionToUpdate.lots.forEach(lot => {
-	// 		if(!lot.title) {
-	// 			thereIsNoEmptyLotTitle = false
-	// 		}
-	// 		if(!lot.description) {
-	// 			thereIsNoEmptyLotDescription = false
-	// 		}
-	// 	})
-
-	// 	if(auctionToUpdate.title && thereIsNoEmptyLotTitle && thereIsNoEmptyLotDescription) {
-	// 		this.$http.post('/api/auction/update', auctionToUpdate)
-	// 		.then(response => {
-	// 		if(response.status == 200) {
-	// 			this.mutableAuctioneer.auctions[index] = response.data
-	// 			this.editMode.state = false
-	// 			this.editAuctionButton.label = 'Edit'
-	// 			window.location.reload()
-	// 		}
-	// 		})
-	// 		.catch(err => console.log(err))
-	// 	} else if(!auctionToUpdate.title) {
-	// 		this.errors.push('You must input a title for the auction.')
-	// 	} else if(!thereIsNoEmptyLotTitle) {
-	// 		this.errors.push("You must not leave a lots's title empty.")
-	// 	} else if(!thereIsNoEmptyLotDescription) {
-	// 		this.errors.push("You must not leave a lot's description empty.")
-	// 	} else {
-	// 		this.errors.push("There was an unknown error.")
-	// 	} 
-	// 	},
-
-	// 	// editAuction: function(index) {
-	// 	// this.editMode.state = !this.editMode.state
-	// 	// this.editAuctionButton.label = this.editMode.state ? 'Cancel' : 'Edit'
-	// 	// this.editMode.position = this.editMode.state ? index : null
-	// 	// },
-
-	// 	deleteAuction: function(auction, index) {
-	// 	let message = 'Are you sure?'
-	// 	let options = {
-	// 		okText: 'Delete',
-	// 		cancelText: 'Cancel'
-	// 	}
-
-	// 	this.$dialog.confirm(message, options)
-	// 		.then(() => {
-	// 		this.$http.post('/api/auction/delete', auction)
-	// 		.then(response => {
-
-	// 			if(response.status === 202) {
-	// 			this.mutableAuctioneer.auctions.splice(index, 1)
-	// 			}
-
-	// 		}).catch(err => console.log(err))
-	// 		}).catch(message => console.log(message))
-	// 	},
-
-	// 	finishAuction: function(auction, index) {
-	// 	let message = 'Do you want to finish this auction and show the results?'
-	// 	let options = {
-	// 		okText: 'Finish',
-	// 		cancelText: 'Cancel'
-	// 	}
-	// 	this.$dialog.confirm(message, options)
-	// 		.then(() => {
-	// 		this.$http.post('/api/auction/finish', auction)
-	// 			.then(response => {
-
-	// 			var finishedAuction = response.data
-
-	// 			if(finishedAuction.finished) {
-	// 				finishedAuction.players.sort((a, b) => b.score - a.score)
-	// 			}
-
-	// 			this.mutableAuctioneer.auctions.splice(index, 1, finishedAuction)
-	// 			this.mutableActiveLot = null
-	// 			this.thereIsAnActiveLot = false
-	// 		}).catch(err => console.log(err))
-	// 		}).catch(message => console.log(message))
-	// 	},
-
-	// 	resetAuction: function(auctionId, index) {
-	// 	let message = 'Do you want to reset this auction (all purchases will be deleted)?'
-	// 	let options = {
-	// 		okText: 'Reset',
-	// 		cancelText: 'Cancel'
-	// 	}
-	// 	this.$dialog.confirm(message, options)
-	// 		.then(() => {
-	// 		this.$http.get('/api/auction/reset/' + auctionId)
-	// 		.then(response => {
-	// 			this.mutableActiveLot = null
-	// 			this.thereIsAnActiveLot = false
-	// 			this.mutableAuctioneer.auctions.splice(index, 1, response.data)
-	// 			this.mutableAuctioneer.auctions[index].lots.forEach(lot => {
-	// 			this.startingBid[lot.id] = null
-	// 		})
-	// 		}).catch(err => console.log(err))
-	// 	}).catch(message => console.log(message))
-	// 	},
-
-	// 	addNewLot: function(index) {
-	// 	this.mutableAuctioneer.auctions[index].lots.push({title: null, description: null, correct: false, bids: []})
-	// 	},
-		
-	// 	removeLastLot: function(index) {
-	// 	this.mutableAuctioneer.auctions[index].lots.pop()
-	// 	}
 	}
 }
 
 </script>
 
 <style scoped>
-.auctioneer-collections {
-	margin-top: 2em;
-}
 
 .auctioneer-collections-link {
 	margin-left: .5em;
 }
-
-
 
 a {
   color: inherit;
@@ -579,5 +439,7 @@ table {
 .custom-button {
   margin-right: .5em;
 }
+
+
 
 </style>

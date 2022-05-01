@@ -12,6 +12,7 @@ import EditAuction from '../components/EditAuctionPanel'
 import EditGroup from '../components/EditGroupPanel'
 import ActiveLot from '../components/ActiveLotPanel'
 import Player from '../components/PlayerPanel'
+import AuctionRead from '../components/AuctionReadPanel'
  
 Vue.use(VueRouter)
 
@@ -84,6 +85,12 @@ const routes = [
 		name: "active-lot",
 		component: ActiveLot,
 		props: true
+	},
+	{
+		path: "/auction-read",
+		name: "auction-read",
+		component: AuctionRead,
+		props: true
 	}
 ]
 
@@ -93,7 +100,9 @@ const router = new VueRouter({
 
 router.beforeEach((routeTo, routeFrom, next) => {
 	if(!routeTo.meta.public && !store.state.token) {
-		next({path: '/signin'})
+		console.log(routeFrom)
+		console.log(routeTo)
+		next({path: '/signin', query: { redirect: routeTo.name, params: routeTo.params }})
 	} else {
 		next()
 	}

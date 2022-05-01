@@ -106,7 +106,6 @@ export default {
 				this.signOut(auth)
 			}
 		} else {
-			console.log('no user present')
 			this.thereIsNoUser = true
 			this.signOut(auth)
 		}
@@ -137,7 +136,7 @@ export default {
 	},
 
 	signOut: function() {
-		signOut(getAuth()).then(() => console.log('siging out')).catch(err => console.log(err))
+		signOut(getAuth()).then().catch(err => console.log(err))
 	},
 
 	deleteAccount: function() {

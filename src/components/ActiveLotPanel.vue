@@ -115,7 +115,6 @@ export default {
 			this.loader.loading = true
 			this.$store.dispatch('defineActiveLotForm', this.storedActiveLotForm)
 			.then((data) => {
-				console.log(data)
 				this.lot = data
 				this.interval(this.lot.id)
 				this.loader.loading = false
@@ -137,7 +136,7 @@ export default {
 			.then(() => {
 				this.$modal.hide('confirmResetLotModal')
 				this.$store.commit('RESET_ACTIVE_LOT_FORM')
-				this.$router.push({name: 'auction'})
+				this.$router.push({name: 'auction', params: {auctionId: this.lot.id }})
 			})
 			.catch((error) => {
 				console.log(error)

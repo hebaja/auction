@@ -14,10 +14,13 @@
 					@change="$v.group.name.$touch()" />
 				<span v-if="$v.group.name.$error" class="red-text helper-text left-align">This field is required</span>
 			</div>
-			<div class="col s1" style="margin-top: 2em;">
-				<a href="#" v-tooltip.top="'Add a player to the group'" @click.prevent="addPlayer">
+			<div class="col s1" style="margin-top: 1.5em;">
+				<!-- <a href="#" v-tooltip.top="'Add a player to the group'" @click.prevent="addPlayer">
 					<i class="blue-text text-darken-4 material-icons">add_circle</i>
-				</a>
+				</a> -->
+				<button class="btn-floating waves-effect waves-light blue darken-4" @click.prevent="addPlayer" v-tooltip.top="'Add a player to the group'">
+					<i class="material-icons">add</i>
+				</button>
 			</div>
 			<div v-for="(player, index) in group.players" :key="player.id">
 				<div class="input-field col s7 m8 l6 xl7 offset-l1 offset-xl1" style="margin-top: -.5em;">

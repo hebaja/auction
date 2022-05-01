@@ -5,7 +5,7 @@
 			<div v-if="errorMessage" class="col s12">
 				<p class="red-text">{{ errorMessage }}</p>
 			</div>
-			<div class="input-field col s11">
+			<div class="input-field col s12">
 				<i class="material-icons prefix" :class="{ 'icon-input-field-fail-error' : $v.auction.title.$error}">gavel</i>
 				<input
 					v-model.lazy="$v.auction.title.$model"
@@ -15,11 +15,30 @@
 					@change="$v.auction.title.$touch()" />
 				<span v-if="$v.auction.title.$error" class="red-text helper-text left-align">This field is required</span>
 			</div>
-			<div class="col s1" style="margin-top: 2em;">
-				<a href="#" v-tooltip.top="'Add a lot to the auction'" @click.prevent="addLot">
-					<i class="blue-text text-darken-4 material-icons">add_circle</i>
-				</a>
+			<div class="col s4 offset-s3" style="margin-top: .5em;">
+				<div class="switch">
+					<label>
+						<span style="font-size: 1.3em;"><b>Private</b></span>
+						<input type="checkbox" v-model="auction.publicAuction">
+						<span class="lever"></span>
+						<span style="font-size: 1.3em;"><b>Public</b></span>
+					</label>
+				</div>	
 			</div>
+			<div class="col s1" style="margin-bottom: 1.2em;">
+				<!-- <a href="#" v-tooltip.top="'Add a lot to the auction'" @click.prevent="addLot">
+					<i class="blue-text text-darken-4 material-icons">add_circle</i>
+				</a> -->
+				<button class="btn-floating waves-effect waves-light blue darken-4" @click.prevent="addLot" v-tooltip.top="'Add a lot to the auction'">
+					<i class="material-icons">add</i>
+				</button>
+			</div>
+			
+			
+
+			
+
+
 			<div v-for="(lot, index) in auction.lots" :key="lot.id">
 				<div class="input-field col s9" style="margin-top: -.5em;">
 					<i class="material-icons prefix" :class="{ 'icon-input-field-fail-error' : $v.auction.lots.$each[index].description.$error}">shopping_cart</i>
@@ -32,14 +51,23 @@
 						<span v-if="$v.auction.lots.$each[index].description.$error" class="red-text helper-text left-align">This field is required</span>
 				</div>
 				<div class="col s2" style="margin-top: 1em;">
-					<label v-if="lot.correct" v-tooltip.top="'Is it corret?'">
+					<!-- <label v-if="lot.correct" v-tooltip.top="'Is it corret?'">
 						<input type="checkbox" v-model="lot.correct"/>
 						<span><i class="material-icons blue-text text-darken-4">thumb_up</i></span>
 					</label>
 					<label v-else v-tooltip.top="'Is it corret?'">
 						<input type="checkbox" v-model="lot.correct"/>
 						<span><i class="material-icons red-text text-darken-4">thumb_down</i></span>
-					</label>
+					</label> -->
+
+					<div class="switch" v-tooltip.top="'Is it right?'">
+						<label>
+						<input type="checkbox" v-model="lot.correct">
+						<span class="lever"></span>
+						<span style="margin-left: -.7em">right</span>
+						</label>
+					</div>
+
 				</div>
 				<div class="col s1" style="margin-top: 1em;">
 					<a v-tooltip.top="'Remove this lot from the auction'" href="#" @click.prevent="remove(index)">
@@ -67,6 +95,7 @@
 import { mapGetters } from 'vuex'
 import { required } from 'vuelidate/lib/validators'
 import GridLoader from "vue-spinner/src/GridLoader.vue";
+// import AppButtonGroup from './shared/AppButtonGroup.vue'
 
 export default {
 	name: 'edit-auction',
@@ -84,7 +113,8 @@ export default {
 		}
 	},
 	components: {
-		GridLoader
+		GridLoader,
+		// AppButtonGroup
 	},
 	computed: {
 		...mapGetters(['storedEditAuction']),
@@ -108,8 +138,10 @@ export default {
 			this.errorMessage = 'There was a problem loading the auction'
 		} else if(this.receivedAuction) {
 			this.auction = this.receivedAuction
+			console.log(this.auction)
 		} else if(this.storedEditAuction) {
 			this.auction = this.storedEditAuction
+			console.log(this.auction)
 		}
 	},
 	methods: {
@@ -123,6 +155,7 @@ export default {
 				} else {
 					this.register()
 				}
+				console.log(this.auction)
 			} else {
 				this.$v.$touch()
 			}
@@ -147,7 +180,8 @@ export default {
 			let registerForm = {
 				auctioneerId: this.storedAuctioneer.id,
 				title: this.auction.title,
-				lots: this.auction.lots
+				lots: this.auction.lots,
+				publicAuction: this.auction.publicAuction
 			}
 			this.$http.post('/api/auction/register', registerForm)
 			.then(() => {
@@ -188,5 +222,13 @@ export default {
 </script>
 
 <style scoped>
+
+
+.switch label input[type=checkbox]:checked+.lever {
+   background-color: #2196f3 ;
+}
+.switch label input[type=checkbox]:checked+.lever:after {
+   background-color: #0d47a1 ;
+}
 
 </style>

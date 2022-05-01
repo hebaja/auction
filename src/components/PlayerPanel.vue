@@ -26,7 +26,7 @@
 					{{ lot.description }}
 					&nbsp;&nbsp;
 					<span class="red-text text-darken-4">
-						<i class="material-icons inline-icon">attach_money</i>{{ lot.pricePaid }}
+						<i class="material-icons inline-icon">attach_money</i><span style="font-size: 1.3em;">{{ lot.pricePaid }}</span>
 					</span>
 				</li>
 			</ul>
@@ -119,15 +119,14 @@ export default {
 			}
 		},
 		invertedBidList() {
-			if(this.player.activeLot.bids) {
-				return this.player.activeLot.bids.slice().reverse()
-			} else {
-				return ''
+			if(this.player.activeLot) {
+				if(this.player.activeLot.bids) return this.player.activeLot.bids.slice().reverse()
 			}
+			return ''
 		},
 		playerAcquiredLots() {
-			if(this.player.acquiredLots.length > 0) {
-				return true
+			if(this.player.acquiredLots) {
+				if(this.player.acquiredLots.length > 0) return true
 			}
 			return false
 		}
@@ -156,7 +155,7 @@ export default {
 			.catch(error => {
 				console.log(error)
 				this.loader.loading = false
-				this.errorMessage = 'It wasn\'t possible to load player\'s panel. Please try again'
+				this.errorMessage = 'It wasn\'t possible to load player\'s panel. Please try again.'
 		})
 		} else {
 			this.errorMessage = 'There was a problem with the link'

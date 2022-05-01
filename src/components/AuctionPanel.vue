@@ -17,11 +17,11 @@
 					<div class="col s4">
 						<AppButton class="col s12" label="Finish" @click.prevent.native="finish(auction.id)"/>
 					</div>
-					<div class="col s4">
+					<div v-show="!auction.favorite" class="col s4">
 						<AppButton class="col s12" category="edit" label="edit" @click.prevent.native="editAuction" />
 					</div>
 					<div class="col s4">
-						<AppButton class="col s12" category="delete" label="Delete" @click.prevent.native="$modal.show('confirmDeleteAuctionModal')"/>
+						<AppButton class="col s12" category="delete" :label="auction.favorite ? 'Remove' : 'Delete'" @click.prevent.native="$modal.show('confirmDeleteAuctionModal')"/>
 					</div>
 					<hr class="col s12" style="margin-top: 2em;"/>
 				</div>
@@ -214,7 +214,8 @@ export default {
 	},
 	computed: {
 		...mapGetters(['storedOpenAuctionId']),
-		...mapGetters(['storedActiveLotForm'])
+		...mapGetters(['storedActiveLotForm']),
+		...mapGetters(['storedAuctioneer'])
 
 	},
 	mounted() {
@@ -223,10 +224,12 @@ export default {
 			this.errorMessage = 'There was a problem loading auction'
 			this.loader.loading = false
 		} else if(this.auctionId) {
-			this.$http.get('/api/auction/' + this.auctionId)
+			let auctionForm = this.buildAuctionForm()
+			this.$http.post('/api/auction/', auctionForm)
 			.then((response) => {
 				this.auction = response.data
 				this.loader.loading = false
+				console.log(response.data)
 			})
 			.catch((error) => {
 				console.log(error)
@@ -234,10 +237,12 @@ export default {
 				this.errorMessage = 'There was a problem loading auction'
 			})			
 		} else if(this.storedOpenAuctionId) {
-			this.$http.get('/api/auction/' + this.storedOpenAuctionId)
+			let auctionForm = this.buildAuctionForm()
+			this.$http.post('/api/auction/', auctionForm)
 			.then((response) => {
 				this.auction = response.data
 				this.loader.loading = false
+				console.log(response.data)
 			})
 			.catch((error) => {
 				console.log(error)
@@ -248,6 +253,7 @@ export default {
 			this.errorMessage = 'There was a problem loading auction'
 			this.loader.loading = false
 		}
+		
 	},
 	methods: {
 		editAuction() {
@@ -261,7 +267,8 @@ export default {
 			} else {
 				let activeLotForm = {
 					lotId: lot.id,
-					startingBid: this.startingBid[lot.id]
+					startingBid: this.startingBid[lot.id],
+					auctioneerId: this.storedAuctioneer.id
 				}
 				this.$router.push({name: 'active-lot', params: { activeLotForm: activeLotForm }})
 			}
@@ -287,12 +294,14 @@ export default {
 		},
 		finish(auctionId) {
 			let auctionForm = {
-				id: auctionId
+				auctionId: auctionId,
+				auctioneerId: this.storedAuctioneer.id
 			}
 			this.$http.post('/api/auction/finish', auctionForm)
 			.then((response) => {
 				console.log(response)
 				this.auction = response.data
+				console.log(this.auction.players)
 			})
 			.catch((error) => {
 				console.log(error)
@@ -335,10 +344,24 @@ export default {
 
 			})
 
-		}
+		},
+		buildAuctionForm() {
+			if(this.auctionId) {
+				return {
+					auctioneerId: this.storedAuctioneer.id,
+					auctionId: this.auctionId
+				}
+			} else {
+				return {
+					auctioneerId: this.storedAuctioneer.id,
+					auctionId: this.storedOpenAuctionId
+				}
+			}
 
+
+			
+		}
 	}
-	
 }
 </script>
 

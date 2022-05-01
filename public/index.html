@@ -20,14 +20,17 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-	var elems = document.querySelectorAll('.collapsible');
-	var elems1 = document.querySelectorAll('.tooltipped');
-	var elems2 = document.querySelectorAll('.autocomplete');
-	var elems3 = document.querySelectorAll('.sidenav');
-	var instances = M.Collapsible.init(elems, {accordion: true});
-	var instances1 = M.Tooltip.init(elems1, {position: 'top'}); 
-	var instances2 = M.Autocomplete.init(elems2); 
-	var instances3 = M.Sidenav.init(elems3);
+	var collapsible = document.querySelectorAll('.collapsible')
+	var tooltipped = document.querySelectorAll('.tooltipped')
+	var autocomplete = document.querySelectorAll('.autocomplete')
+	var sidenav = document.querySelectorAll('.sidenav')
+	var tabs = document.querySelectorAll('.tabs')
+	
+	var collapsibleInstance = M.Collapsible.init(collapsible, {accordion: true});
+	var tooltippedInstance = M.Tooltip.init(tooltipped, {position: 'top'}); 
+	var autocompleteInstance = M.Autocomplete.init(autocomplete); 
+	var sidenavInstance = M.Sidenav.init(sidenav);
+	var tabsInstance = M.Tabs.init(tabs);
 });
 
 </script>
@@ -100,6 +103,8 @@ document.addEventListener('DOMContentLoaded', function() {
 .icon-input-field-fail-error {
 	color:  #be0606;
 }
+
+
 
 </style>
 </html>
