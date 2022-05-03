@@ -11,19 +11,29 @@
 			</div>
 			<form v-show="!auction.finished" v-on:submit.prevent="update(auction, auctionIndex)">
 				<div class="row" style="margin-bottom: -.5em;">
-					<div class="col s12">
+					<div class="col s12 m9 ">
 						<h5><i class="material-icons" style="vertical-align: -.2em; margin-right: .3em">gavel</i>{{ auction.title }}</h5>
 					</div>
-					<div class="col s4">
+					<div class="col s4" style="margin-top: 1em;">
 						<AppButton class="col s12" label="Finish" @click.prevent.native="finish(auction.id)"/>
 					</div>
-					<div v-show="!auction.favorite" class="col s4">
+					<div v-show="!auction.favorite" class="col s4" style="margin-top: 1em;">
 						<AppButton class="col s12" category="edit" label="edit" @click.prevent.native="editAuction" />
 					</div>
-					<div class="col s4">
+					<div class="col s4" style="margin-top: 1em;">
 						<AppButton class="col s12" category="delete" :label="auction.favorite ? 'Remove' : 'Delete'" @click.prevent.native="$modal.show('confirmDeleteAuctionModal')"/>
 					</div>
 					<hr class="col s12" style="margin-top: 2em;"/>
+					<div class="col s12" style="margin-top: 1em;">
+						<div class="switch">
+							<label v-tooltip.top="'Show/hide wrong and right'">
+								<span style="font-size: 1.3em;"><b>Hide</b></span>
+								<input type="checkbox" v-model="showRightWrong">
+								<span class="lever"></span>
+								<span style="font-size: 1.3em;"><b>Show</b></span>
+							</label>
+						</div>	
+					</div>
 				</div>
 				<AppModal 
 					name="confirmDeleteAuctionModal"
@@ -43,7 +53,11 @@
 							<i v-if="lot.active && !lot.pricePaid" class="material-icons col s1" style="font-size: 1.5em;">add_shopping_cart</i>
 							<i v-if="lot.pricePaid" class="material-icons col s1" style="font-size: 1.5em;">remove_shopping_cart</i>
 							<span v-if="!lot.pricePaid" class="col s9 l6">
-								<span style="font-size: 1.3em">{{ lot.description }}</span>
+								<span 
+									style="font-size: 1.3em"
+									:class="[ showRightWrong ? [ lot.correct ? 'blue-text text-darken-4' : 'red-text text-darken-4' ] : '' ]">
+										{{ lot.description }}
+								</span>
 							</span>
 							<span v-else class="col s9" style="font-size: 1.3em">{{ lot.description }}</span>
 						</div>
@@ -200,6 +214,7 @@ export default {
 			thereIsAnActiveLot: null,
 			resetLotId: null,
 			errorMessage: '',
+			showRightWrong: false,
 			loader: {
 				color: '#0d47a1',
 				size: '12px',
@@ -216,7 +231,6 @@ export default {
 		...mapGetters(['storedOpenAuctionId']),
 		...mapGetters(['storedActiveLotForm']),
 		...mapGetters(['storedAuctioneer'])
-
 	},
 	mounted() {
 		this.loader.loading = true
@@ -356,10 +370,7 @@ export default {
 					auctionId: this.storedOpenAuctionId
 				}
 			}
-
-
-			
-		}
+		},
 	}
 }
 </script>

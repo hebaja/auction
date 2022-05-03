@@ -84,7 +84,6 @@ import { getAuth,
 		signInWithPopup,
 		GoogleAuthProvider,
 		FacebookAuthProvider,
-		// sendEmailVerification,
 		signOut } 
 	from "firebase/auth"
 import GridLoader from "vue-spinner/src/GridLoader.vue";
