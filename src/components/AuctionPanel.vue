@@ -348,6 +348,7 @@ export default {
 			.then(() => {
 				let activeLotForm = {
 					lotId: this.overrideLot.id,
+					auctioneerId: this.storedAuctioneer.id,
 					startingBid: this.startingBid[this.overrideLot.id]
 				}
 				this.$router.push({name: 'active-lot', params: { activeLotForm: activeLotForm }})

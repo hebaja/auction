@@ -144,9 +144,9 @@ export default {
 						.catch((error) => {
 							console.log(error)
 							this.errorMessage = error
+							this.disableButton = false
+							this.loader.loading = false
 						})
-						this.disableButton = false
-						this.loader.loading = false
 					}).catch(error => {
 						this.errorMessage = error
 						this.signOut(auth)
@@ -253,6 +253,8 @@ export default {
 		redirectAuctioneer() {
 			if(this.$route.query.redirect) this.$router.push({name: this.$route.query.redirect, params: this.$route.query.params})
 			else this.$router.push({name: 'auctioneer'})
+			this.disableButton = false
+			this.loader.loading = false
 		},
 		signOut: function(auth) {
 			signOut(auth).then(() => console.log('signing out')).catch((error) => console.log(error))

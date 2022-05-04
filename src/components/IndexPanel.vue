@@ -4,7 +4,7 @@
 			<p id="home-main-text" class="blue-text text-darken-4 center-align">Auctions made fun!</p>
 		</div>
 		<form v-on:submit.prevent="search" class="col s12" style="margin-top: .5em; margin-left: -.8em;">
-				<div class="input-field col s11">
+				<div class="input-field col s10 l11">
 					<i class="material-icons prefix" :class="{ 'icon-input-field-fail-error' : $v.searchQuery.$error}">search</i>
 					<input 
 						type="text"
@@ -17,7 +17,7 @@
 					<span v-if="$v.searchQuery.$error" class="red-text helper-text left-align">This field is required</span>
 				</div>
 				<button 
-					class="col s1 waves-effect waves-light btn-small blue darken-4"
+					class="col s2 l1 waves-effect waves-light btn-small blue darken-4"
 					type="submit"
 					style="margin-top: 2em;"
 					:disabled="disableButton">
@@ -74,7 +74,6 @@ export default {
 			} else {
 				this.$v.$touch()
 			}
-			
 		},
 	}
 }

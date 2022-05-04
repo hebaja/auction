@@ -2,7 +2,6 @@
 	<div id="app">
 		<Navbar />
 		<div class="container">
-					
 			<router-view />
 		</div>
 	</div>
@@ -10,10 +9,9 @@
 
 <script>
 import Navbar from './components/NavbarPanel.vue'
-import axios from 'axios';
 
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, } from "firebase/auth";
 
 const firebaseConfig = {
 	apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -32,35 +30,7 @@ export default {
 	components: {
 		Navbar,
 	},
-	data() {
-	return {
-		auctioneerId: null,
-		playerId: null,
-		auctioneer: {
-			id: null,
-			name: null,
-			auctions: [],
-			groupPlayers: []
-		},
-		player: {
-			id: null,
-			playerName: null,
-			walletValue: null
-		},
-		query: {
-			playerId: null,
-		},
-		groupActiveArray: [],
-		accessToken: null,
-		thereIsNoUser: false,
-		connectionError: false,
-		deleteAuctioneer: {
-			id: null,
-			uid: null,
-		}
-	}
-	},
-
+	
 	created() {
 	let uri = window.location.href.split('?')
 		if(uri.length == 2) {
@@ -74,122 +44,60 @@ export default {
 		})
 		this.query = getVars
 		}
-
-		const auth = getAuth();
-		onAuthStateChanged(auth, (user) => {
-		
-		if(user) {
-			if(user.emailVerified) {
-			this.$http.post('/api/firebase-auth', user.accessToken)
-			.then((response) => {
-				this.connectionError = false
-				this.auctioneer = response.data
-				this.thereIsNoUser = false
-				this.email = null
-				this.password = null
-				this.accessToken = user.accessToken
-
-				if(!this.groupActiveArray.length && this.auctioneer.groupPlayers) {
-				this.auctioneer.groupPlayers.forEach(groupPlayer => {
-					if(groupPlayer.active === true) {
-					this.groupActiveArray.push(groupPlayer.id)
-					}
-				})
-				}
-			})
-			.catch(err => {
-				console.log("showing error -> " + err)
-				this.signOut(auth)
-			} )
-			} else {
-				console.log('email not verified')
-				this.signOut(auth)
-			}
-		} else {
-			this.thereIsNoUser = true
-			this.signOut(auth)
-		}
-		})
 	},
-	computed: {
-	activeLots: function() {
-		let activeLots = []
-		if(this.auctioneer) {
-		this.auctioneer.auctions.forEach(auction => {
-			auction.lots.forEach(lot => {
-				if(lot.active) {
-					activeLots.push(lot)
-				}
-			})
-		})
-		}
-		return activeLots
-	}
-  }, 
+	
 	methods: {
-	updateGroupActive(event) {
-		this.auctioneer.groupPlayers = event
-	},
+		deleteAccount: function() {
+			let message = 'Do you really want to delete your account?'
+			let options = {
+			okText: 'Delete',
+			cancelText: 'Cancel'
+			}
+			this.$dialog.confirm(message, options)
+			.then(() => {
+				this.deleteAccountConfirm()
+			}).catch(message => console.log(message))
+		},
 
-	methodToRunOnSelect(payload) {
-		this.object = payload;
-	},
-
-	signOut: function() {
-		signOut(getAuth()).then().catch(err => console.log(err))
-	},
-
-	deleteAccount: function() {
-		let message = 'Do you really want to delete your account?'
-		let options = {
-		okText: 'Delete',
-		cancelText: 'Cancel'
+		deleteAccountConfirm: function() {
+			let message = 'If you delete your account, all your data will be lost.'
+			let options = {
+				okText: 'Delete my account',
+				cancelText: 'Cancel'
+			}
+			this.$dialog.confirm(message, options)
+				.then(() => {
+				const auth = getAuth()
+				onAuthStateChanged(auth, (user) => {
+					if(user) {
+						this.deleteAuctioneer.id = this.auctioneer.id
+						this.deleteAuctioneer.uid = user.uid
+						this.$http.post('/api/auctioneer/delete', this.deleteAuctioneer)
+						.then(response => {
+							if(response.status == 200) {
+								this.signOut()
+								document.location.reload(true)
+							} else {
+								console.log('unexpected response status ' + response.status)
+							}
+						})
+						.catch((error) => {
+							console.log(error)
+							if(error == 'Error: Request failed with status code 400') {
+								this.errors.push('There was a problem when trying to delete user.')
+							}
+							if(error == 'Error: Network Error') {
+								this.errors.push('Could not connect to server. Please check your internet connection.')
+							}
+						})
+					} 
+				})
+			})
+			.catch(message => console.log(message))
 		}
-		this.$dialog.confirm(message, options)
-		.then(() => {
-			this.deleteAccountConfirm()
-		}).catch(message => console.log(message))
-	},
-
-	deleteAccountConfirm: function() {
-	let message = 'If you delete your account, all your data will be lost.'
-	let options = {
-		okText: 'Delete my account',
-		cancelText: 'Cancel'
 	}
-	this.$dialog.confirm(message, options)
-		.then(() => {
-		const auth = getAuth()
-		onAuthStateChanged(auth, (user) => {
-			if(user) {
-			this.deleteAuctioneer.id = this.auctioneer.id
-			this.deleteAuctioneer.uid = user.uid
-			axios.post('https://hebaja-auction-api.herokuapp.com/api/auctioneer/delete', this.deleteAuctioneer)
-			.then(response => {
-				if(response.status == 200) {
-					this.signOut()
-					document.location.reload(true)
-				} else {
-					console.log('unexpected response status ' + response.status)
-				}
-			})
-			.catch((error) => {
-				console.log(error)
-				if(error == 'Error: Request failed with status code 400') {
-					this.errors.push('There was a problem when trying to delete user.')
-				}
-				if(error == 'Error: Network Error') {
-					this.errors.push('Could not connect to server. Please check your internet connection.')
-				}
-			})
-			} 
-		})
-		}).catch(message => console.log(message))
-	}
-
-	}
-
 }
+
 </script>
 
 <style>
