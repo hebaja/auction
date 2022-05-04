@@ -183,7 +183,7 @@ export default {
 			} else {
 				this.disabledButton = true
 				this.buttonLoader.loading = true
-				this.$http.post(process.env.VUE_APP_DEFAULT_API_BASE_URL + '/api/player/make-bid', this.bid)
+				this.$http.post('/api/player/make-bid', this.bid)
 				.then(response => {
 					if(response.status === 200) {
 						this.errorMessage = ''

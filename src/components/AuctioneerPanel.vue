@@ -84,7 +84,7 @@
 				</Tab>
 			</Tabs>
 
-			<div class="col s7 m5">
+			<div class="col s7 m5" style="margin-top: -2em; margin-bottom: 2em;">
 				<app-button 
 					class="col s12"
 					label="Add an auction"
@@ -157,7 +157,7 @@
 					</AppModal>
 				</ul>
 			</div>
-			<div class="col s7 m5">
+			<div class="col s7 m5" style="margin-top: -.5em;">
 				<app-button 
 					class="col s12" 
 					label="Add a group" 
