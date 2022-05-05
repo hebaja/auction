@@ -54,8 +54,8 @@
 					</div>
 					<div class="input-field col s12 m10 l8 offset-m1 offset-l2">
 						<i class="material-icons prefix">lock_outline</i>
-						<input type="password" v-model="password">
-						<label>Password</label>
+						<input type="password" id="password-input" v-model="password">
+						<label for="password-input">Password</label>
 					</div>
 					<button 
 						class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 waves-effect waves-light btn-small button-activate blue darken-4"
@@ -63,9 +63,6 @@
 						:disabled="disableButton">
 							Sign in
 					</button>
-					<div class="col s1">
-						<grid-loader :loading="loader.loading" :color="loader.color" :size="loader.size" />
-					</div>
 					<div class="col s12" style="margin-top: 1.5em;">
 						<router-link to="/signup" style="margin-top: 1em;">Sing up with e-mail</router-link>
 					</div>
@@ -75,6 +72,11 @@
 				</div>
 			</form>
 		</div>
+		<OverlayLoading :active="overlay.isLoading"
+			:can-cancel="false"
+			:is-full-page="overlay.fullPage"
+			:color="overlay.color"
+			:loader="overlay.loader"/>
 	</div>
 </template>
 
@@ -86,7 +88,8 @@ import { getAuth,
 		FacebookAuthProvider,
 		signOut } 
 	from "firebase/auth"
-import GridLoader from "vue-spinner/src/GridLoader.vue";
+import OverlayLoading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
 	name: 'signin',
@@ -98,10 +101,11 @@ export default {
 			message: '',
 			errorMessage: null,
 			disableButton: false,
-			loader: {
+			overlay: {
+				isLoading: false,
+				fullPage: true,
 				color: '#0d47a1',
-				size: '7px',
-				loading: false,
+				loader: 'dots'
 			},
 			googleButton: {
 				iconTheme: 'color',
@@ -118,16 +122,16 @@ export default {
 		}
 	},
 	components: {
-		GridLoader
+		OverlayLoading
 	},
 	props: ['auctioneerId'],
 	methods : {
-		signin: function() {
+		signin() {
 			this.errorMessage = null
 			this.verificationEmailSentMessage = null
 			const auth = getAuth()
 			this.disableButton = true
-			this.loader.loading = true
+			this.overlay.isLoading = true
 
 			signInWithEmailAndPassword(auth, this.email, this.password)
 			.then((userCredential) => {
@@ -145,19 +149,19 @@ export default {
 							console.log(error)
 							this.errorMessage = error
 							this.disableButton = false
-							this.loader.loading = false
+							this.overlay.isLoading = false
 						})
 					}).catch(error => {
 						this.errorMessage = error
 						this.signOut(auth)
 						this.disableButton = false
-						this.loader.loading = false
+						this.overlay.isLoading = false
 					})
 				} else {
 					console.log('email not verified')
 					this.errorMessage = 'You must verify your e-mail to sign in.'
 					this.disableButton = false
-					this.loader.loading = false								
+					this.overlay.isLoading = false						
 				}
 			}).
 			catch((error) => {
@@ -187,7 +191,7 @@ export default {
 					this.errorMessage = 'Your account has been temporarily disabled. Please try again later.'
 				}
 				this.disableButton = false
-				this.loader.loading = false
+				this.overlay.isLoading = false
 			});
 		},
 		googleSignIn() {
@@ -254,7 +258,8 @@ export default {
 			if(this.$route.query.redirect) this.$router.push({name: this.$route.query.redirect, params: this.$route.query.params})
 			else this.$router.push({name: 'auctioneer'})
 			this.disableButton = false
-			this.loader.loading = false
+			// this.loader.loading = false
+			this.overlay.isLoading = false
 		},
 		signOut: function(auth) {
 			signOut(auth).then(() => console.log('signing out')).catch((error) => console.log(error))

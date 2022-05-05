@@ -15,13 +15,13 @@
 					@change="$v.auction.title.$touch()" />
 				<span v-if="$v.auction.title.$error" class="red-text helper-text left-align">This field is required</span>
 			</div>
-			<div class="col s4 offset-s3" style="margin-top: .5em;">
+			<div class="col s7 offset-s1 m4 offset-m3" style="margin-top: .5em;">
 				<div class="switch">
 					<label>
-						<span style="font-size: 1.3em;"><b>Private</b></span>
+						<span style="font-size: 1.3em;"><b :class="!auction.publicAuction ? 'blue-text text-darken-4' : ''">Private</b></span>
 						<input type="checkbox" v-model="auction.publicAuction">
 						<span class="lever"></span>
-						<span style="font-size: 1.3em;"><b>Public</b></span>
+						<span style="font-size: 1.3em;"><b :class="auction.publicAuction ? 'blue-text text-darken-4' : ''">Public</b></span>
 					</label>
 				</div>	
 			</div>
@@ -31,7 +31,7 @@
 				</button>
 			</div>
 			<div v-for="(lot, index) in auction.lots" :key="lot.id">
-				<div class="input-field col s9" style="margin-top: -.5em;">
+				<div class="input-field col s11" style="margin-top: -.5em;">
 					<i class="material-icons prefix" :class="{ 'icon-input-field-fail-error' : $v.auction.lots.$each[index].description.$error}">shopping_cart</i>
 					<input
 						v-model.lazy="$v.auction.lots.$each[index].description.$model"
@@ -41,19 +41,20 @@
 						@change="$v.auction.lots.$each[index].description.$touch()"/>
 						<span v-if="$v.auction.lots.$each[index].description.$error" class="red-text helper-text left-align">This field is required</span>
 				</div>
-				<div class="col s2" style="margin-top: 1em;">
-					<div class="switch" v-tooltip.top="'Is it right?'">
-						<label>
-						<input type="checkbox" v-model="lot.correct">
-						<span class="lever"></span>
-						<span style="margin-left: -.7em">right</span>
-						</label>
-					</div>
-				</div>
-				<div class="col s1" style="margin-top: 1em;">
+				<div class="col s1" style="margin-top: .5em;">
 					<a v-tooltip.top="'Remove this lot from the auction'" href="#" @click.prevent="remove(index)">
 						<i class="red-text text-darken-4 material-icons">delete</i>
 					</a>
+				</div>
+				<div class="col s6 offset-s3" style="margin-top: -1em; margin-bottom: 1em;">
+					<div class="switch" v-tooltip.top="'Is it right?'">
+						<label>
+							<span :class="!lot.correct ? 'red-text text-darken-4' : ''">Wrong</span>
+							<input type="checkbox" v-model="lot.correct">
+							<span class="lever"></span>
+							<span :class="lot.correct ? 'blue-text text-darken-4' : ''">Right</span>
+						</label>
+					</div>
 				</div>
 			</div>
 		</div>

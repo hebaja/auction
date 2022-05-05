@@ -1,7 +1,7 @@
 <template>
-	<div id="forgot-password">
+	<div id="forgot-password" style="margin-top: 1em;">
 		<div class="row">
-			<h4 class="center-align col s12">Recover Password</h4>      
+			<h5 class="center-align col s12">Recover password</h5>
 		</div>
 		<div v-if="errorMessage" class="col s12">
 			<p class="red-text text-darken-4 center-align">{{ errorMessage }}</p>
@@ -10,32 +10,35 @@
 			<p class="green-text text-darken-4 center-align">{{ message }}</p>
 		</div>
 		<form v-on:submit.prevent='send'>
-			<div class="row center-align">
-			<div class="input-field col col s12 m10 l8 offset-m1 offset-l2">
-				<i class="material-icons prefix">email</i>
-				<input id="email-input" type="email" v-model="email">
-				<label for="email-input">Input your e-mail</label>
-			</div>
+			<div class="row center-align" style="margin-top: -1em;">
+				<div class="input-field col col s12 m10 l8 offset-m1 offset-l2">
+					<i class="material-icons prefix">email</i>
+					<input id="email-input" type="email" v-model="email">
+					<label for="email-input">Input your e-mail</label>
+				</div>
 				<button 
 					class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 waves-effect btn btn-small waves-light blue darken-4" 
 					type="submit"
 					:disabled="disableButton">
 						Recover password
 				</button>
-				<div class="col s1">
-					<grid-loader :loading="loader.loading" :color="loader.color" :size="loader.size" />
-				</div>
 				<div class="col s12" style="margin-top: 1.5em;">
 					<router-link to="/signin">Back to sign in</router-link>
 				</div>
 			</div>
 		</form>
+		<OverlayLoading :active="overlay.isLoading"
+			:can-cancel="false"
+			:is-full-page="overlay.fullPage"
+			:color="overlay.color"
+			:loader="overlay.loader"/>
 	</div>
 </template>
 
 <script>
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import GridLoader from "vue-spinner/src/GridLoader.vue";
+import OverlayLoading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
 	name: 'forgot-password',
@@ -45,32 +48,33 @@ export default {
 			message: '',
 			errorMessage: '',
 			disableButton: false,
-			loader: {
+			overlay: {
+				isLoading: false,
+				fullPage: true,
 				color: '#0d47a1',
-				size: '7px',
-				loading: false
+				loader: 'dots'
 			}
 		}
 	},
 	components: {
-		GridLoader
+		OverlayLoading
 	},
 	methods: {
 		send() {
 			this.disableButton = true
-			this.loader.loading = true
+			this.overlay.isLoading = true
 			if(!this.email) {
 				this.message = ''
 				this.errorMessage = 'You must insert an e-mail.'
 				this.disableButton = false
-				this.loader.loading = false
+				this.overlay.isLoading = false
 			} else {
 				const auth = getAuth();
 				sendPasswordResetEmail(auth, this.email)
 				.then(() => {
 					this.message = 'An e-mail has been sent to ' + this.email + '. Check your inbox to reset your password.'
 					this.disableButton = false
-					this.loader.loading = false
+					this.overlay.isLoading = false
 					this.errorMessage = ''
 					this.email = null
 				})
@@ -85,7 +89,7 @@ export default {
 						this.errorMessage = 'There was an error.'
 					}
 					this.disableButton = false
-					this.loader.loading = false
+					this.overlay.isLoading = false
 				})	
 			}
 		}

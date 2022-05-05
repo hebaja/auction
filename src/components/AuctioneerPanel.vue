@@ -35,6 +35,9 @@
 									<span v-if="auction.finished" class="secondary-content" v-tooltip.top="'This auction is finished'">
 										<i class="grey-text text-darken-1 material-icons">done_all</i>
 									</span>
+									<span v-if="auction.openLot" class="secondary-content" v-tooltip.top="'There is an open lot'">
+										<i class="grey-text text-darken-1 material-icons">warning</i>
+									</span>
 							</li>
 							<AppModal 
 								name="confirmDeleteAuctionModal"
@@ -49,7 +52,7 @@
 				<Tab title="My favorites">
 					<div class="auctioneer-collections col s12">
 						<ul class="collection with-header">
-							<li class="collection-header"><h5>My favorites</h5></li>
+							<li class="collection-header"><h5>Favorites</h5></li>
 							<li 
 								v-for="auction in auctioneer.favoriteAuctions" 
 								:key="auction.id"
@@ -70,6 +73,9 @@
 									</a>
 									<span v-if="auction.finished" class="secondary-content" v-tooltip.top="'This auction is finished'">
 										<i class="grey-text text-darken-1 material-icons">done_all</i>
+									</span>
+									<span v-if="auction.openLot" class="secondary-content" v-tooltip.top="'There is an open lot'">
+										<i class="grey-text text-darken-1 material-icons">warning</i>
 									</span>
 							</li>
 							<AppModal 
@@ -210,14 +216,13 @@ export default {
 		Tab,
 		Tabs
     },
-
     props: ['groupActiveArray', 'accessToken'],
-
     created() {
 		this.auctioneer = this.storedAuctioneer
 		this.$http.get('/api/auctioneer/auctions/' + this.auctioneer.id)
 		.then((response) => {
 			this.auctioneer = response.data
+			console.log(response.data)
 		})
 		.catch((error) => {
 			console.log(error)
@@ -313,11 +318,13 @@ export default {
 					if(error.response) {
 						this.$notice['warning']({
 							title: 'Attention',
-							description: 'This auction has already beed removed from your favorites'
+							description: 'This auction has already beed removed from your favorites',
+							duration: 6
 						})
 					} else {
 						this.errorMessage = 'There was an error removing the auction from favorites'
 					}
+					this.overlay.isLoading = false
 				})
 			} else {
 				this.errorMessage = 'There was a problem when removing the auction from favorites'
@@ -365,7 +372,6 @@ export default {
 				this.errorMessage = 'There was a problem when trying to change group state'
 			}
 		},
-
 		showDeleteAuctionModal(auction) {
 			this.auctionToBeRemoved = auction
             this.$modal.show('confirmDeleteAuctionModal')
@@ -401,7 +407,6 @@ export default {
 			})
 			this.$modal.hide('playersLinksModal')
 		},
-
 		hideModal() {
             this.$modal.hide('modal');
         },
@@ -438,7 +443,5 @@ table {
 .custom-button {
   margin-right: .5em;
 }
-
-
 
 </style>

@@ -4,7 +4,7 @@
 			<p class="red-text">{{ errorMessage }}</p>
 		</div>
 		<div class="row">
-			<div class="input-field col s11">
+			<div class="input-field col s10">
 				<i class="material-icons prefix" :class="{ 'icon-input-field-fail-error' : $v.group.name.$error}">people</i>
 				<input
 					v-model.lazy="$v.group.name.$model"
@@ -14,16 +14,13 @@
 					@change="$v.group.name.$touch()" />
 				<span v-if="$v.group.name.$error" class="red-text helper-text left-align">This field is required</span>
 			</div>
-			<div class="col s1" style="margin-top: 1.5em;">
-				<!-- <a href="#" v-tooltip.top="'Add a player to the group'" @click.prevent="addPlayer">
-					<i class="blue-text text-darken-4 material-icons">add_circle</i>
-				</a> -->
+			<div class="col s2" style="margin-top: 1.5em;">
 				<button class="btn-floating waves-effect waves-light blue darken-4" @click.prevent="addPlayer" v-tooltip.top="'Add a player to the group'">
 					<i class="material-icons">add</i>
 				</button>
 			</div>
 			<div v-for="(player, index) in group.players" :key="player.id">
-				<div class="input-field col s7 m8 l6 xl7 offset-l1 offset-xl1" style="margin-top: -.5em;">
+				<div class="input-field col s6 m6 l6 xl7 offset-l1 offset-m1 offset-xl1" style="margin-top: -.5em;">
 					<i class="material-icons prefix" :class="{ 'icon-input-field-fail-error' : $v.group.players.$each[index].playerName.$error}">person</i>
 					<input
 						v-model.lazy="$v.group.players.$each[index].playerName.$model"
@@ -43,7 +40,7 @@
 						@change="$v.group.players.$each[index].walletValue.$touch()"/>
 						<span v-if="$v.group.players.$each[index].walletValue.$error" class="red-text helper-text left-align">This field is required</span>
 				</div>
-				<div class="col s1" style="margin-top: 1em;">
+				<div class="col s2 m1" style="margin-top: 1em;">
 					<a v-tooltip.top="'Remove this player from the group'" href="#" @click.prevent="remove(index)">
 						<i class="red-text text-darken-4 material-icons">delete</i>
 					</a>
@@ -52,7 +49,7 @@
 		</div>
 		<div class="row">
 			<button 
-				class="col s12 m8 l6 offset-m2 offset-l3 waves-effect waves-light btn-small button-activate blue darken-4" 
+				class="col s10 m8 l6 offset-s1 offset-m2 offset-l3 waves-effect waves-light btn-small button-activate blue darken-4" 
 				type="submit"
 				:disabled="disableButton">
 					Save

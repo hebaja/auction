@@ -13,7 +13,8 @@ import EditGroup from '../components/EditGroupPanel'
 import ActiveLot from '../components/ActiveLotPanel'
 import Player from '../components/PlayerPanel'
 import AuctionRead from '../components/AuctionReadPanel'
- 
+import Profile from '../components/ProfilePanel' 
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -61,6 +62,11 @@ const routes = [
 		path: "/auctioneer",
 		name: "auctioneer",
 		component: Auctioneer
+	},
+	{
+		path: "/profile",
+		name: "profile",
+		component: Profile
 	},
 	{
 		path: "/auction",

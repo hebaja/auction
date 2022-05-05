@@ -1,7 +1,7 @@
 <template>
-	<div id="signup">
+	<div id="signup" style="margin-top: 1em;">
 		<div class="row">
-			<h4 class="center-align col s12">Sign up with an e-mail account</h4>
+			<h5 class="center-align col s12">Sign up with an e-mail account</h5>
 		</div>
 		<div v-if="errorMessage" class="col s12">
 			<p class="red-text text-darken-4 center-align">{{ errorMessage }}</p>
@@ -9,8 +9,8 @@
 		<div v-if="message" class="col s12">
 			<p class="green-text text-darken-4 center-align">{{ message }}</p>
 		</div>			
-		<form v-on:submit.prevent="signup" style="margin-top: 1em;">
-			<div class="row center-align">
+		<form v-on:submit.prevent="signup">
+			<div class="row center-align" style="margin-top: -1em;">
 				<div class="input-field col s12 m10 l8 offset-m1 offset-l2">
 					<i class="material-icons prefix">mail_outline</i>
 					<input type="email" id="email-input" v-model="email">
@@ -37,20 +37,23 @@
 					:disabled="disableButton">
 						Sign up
 				</button>
-				<div class="col s1">
-					<grid-loader :loading="loader.loading" :color="loader.color" :size="loader.size" />
-				</div>
 				<div class="col s12" style="margin-top: 1.5em;">
 					<router-link to="/sigin">Back to sign in</router-link>
 				</div>
 			</div>
 		</form>
+		<OverlayLoading :active="overlay.isLoading"
+			:can-cancel="false"
+			:is-full-page="overlay.fullPage"
+			:color="overlay.color"
+			:loader="overlay.loader"/>
 	</div>
 </template>
 
 <script>
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
-import GridLoader from "vue-spinner/src/GridLoader.vue";
+import OverlayLoading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
 name: 'signup',
@@ -63,46 +66,49 @@ name: 'signup',
 			errorMessage: '',
 			message: '',
 			disableButton: false,
-			loader: {
+			overlay: {
+				isLoading: false,
+				fullPage: true,
 				color: '#0d47a1',
-				size: '7px',
-				loading: false
+				loader: 'dots'
 			}
 		}
 	},
 	components: {
-		GridLoader
+		OverlayLoading
 	},
 	methods: {
 		signup() {
 			const auth = getAuth()
 			this.disableButton = true
-			this.loader.loading = true
+			this.overlay.isLoading = true
+
 			this.message = ''
 			if(!this.email) {
 				this.errorMessage = 'You must inform a valid e-mail.'
 				this.disableButton = false
-				this.loader.loading = false
+				this.overlay.isLoading = false
+
 			} else if(!this.emailConfirm) {
 				this.errorMessage = 'You must confirm your e-mail.'
 				this.disableButton = false
-				this.loader.loading = false
+				this.overlay.isLoading = false
 			} else if(!(this.email === this.emailConfirm)) {
 				this.errorMessage = 'Emails are different.'
 				this.disableButton = false
-				this.loader.loading = false
+				this.overlay.isLoading = false
 			} else if(!this.password) {
 				this.errorMessage = 'You must input a password.'
 				this.disableButton = false
-				this.loader.loading = false
+				this.overlay.isLoading = false
 			} else if(!this.passwordConfirm) {
 				this.errorMessage = 'You must confirm your password'
 				this.disableButton = false
-				this.loader.loading = false
+				this.overlay.isLoading = false
 			} else if(!(this.password === this.passwordConfirm)) {
 				this.errorMessage = 'Passwords are different.'
 				this.disableButton = false
-				this.loader.loading = false
+				this.overlay.isLoading = false
 			} else {
 				createUserWithEmailAndPassword(auth, this.email, this.password)
 				.then((userCredential) => {
@@ -111,7 +117,7 @@ name: 'signup',
 					.then(() => {
 						this.message = 'An e-mail has been sent to ' + this.email + '. Check your inbox to complete registration.'
 						this.disableButton = false
-						this.loader.loading = false
+						this.overlay.isLoading = false
 						this.errorMessage = ''
 						this.email = null
 						this.emailConfirm = null
@@ -129,16 +135,16 @@ name: 'signup',
 						console.log(error)
 						this.errorMessage = 'Password should be at least 6 characters.'
 						this.disableButton = false
-						this.loader.loading = false
+						this.overlay.isLoading = false
 					}
 					if(error.code === 'auth/email-already-in-use') {
 						console.log(error)
 						this.errorMessage = 'This e-mail has already been registered.'
 						this.disableButton = false
-						this.loader.loading = false
+						this.overlay.isLoading = false
 					}
 					this.disableButton = false
-					this.loader.loading = false
+					this.overlay.isLoading = false
 				})
 			}
 		},

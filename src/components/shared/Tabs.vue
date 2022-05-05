@@ -2,7 +2,7 @@
     <div class="row" >
         <ul class="tabs-header col s12">
             <li 
-				class="col s4 tab-item" 
+				class="col s6 m4 tab-item" 
 				v-for="(tab, index) in tabs"
 				:key="tab.title"
 				@click.prevent="selectTab(index)"

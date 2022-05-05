@@ -1,7 +1,7 @@
 <template>
 	<div class="row" style="margin-top: 1.5em;">
 		<div v-if="loader.loading">
-			<div class="col s1 offset-s6">
+			<div class="col s1 offset-s5">
 				<grid-loader :loading="loader.loading" :color="loader.color" :size="loader.size" />
 			</div>
 		</div>
@@ -49,9 +49,9 @@
 					</div>
 					<div v-for="lot in auction.lots" :key="lot.id">
 						<div class="row">
-							<i v-if="!lot.active && !lot.pricePaid" class="material-icons col s1" style="font-size: 1.5em;">shopping_cart</i>
-							<i v-if="lot.active && !lot.pricePaid" class="material-icons col s1" style="font-size: 1.5em;">add_shopping_cart</i>
-							<i v-if="lot.pricePaid" class="material-icons col s1" style="font-size: 1.5em;">remove_shopping_cart</i>
+							<i v-if="!lot.active && !lot.pricePaid" class="material-icons col s1" style="font-size: 1.5em; margin-top: .2em;">shopping_cart</i>
+							<i v-if="lot.active && !lot.pricePaid" class="material-icons col s1" style="font-size: 1.5em; margin-top: .2em;">add_shopping_cart</i>
+							<i v-if="lot.pricePaid" class="material-icons col s1" style="font-size: 1.5em; margin-top: .2em;">remove_shopping_cart</i>
 							<span v-if="!lot.pricePaid" class="col s9 l6">
 								<span 
 									style="font-size: 1.3em"
@@ -218,7 +218,7 @@ export default {
 			loader: {
 				color: '#0d47a1',
 				size: '12px',
-				loading: false
+				loading: true
 			}
 		}
 	},

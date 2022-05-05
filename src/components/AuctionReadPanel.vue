@@ -69,20 +69,24 @@ export default {
 		}
 	},
 	mounted() {
-		let auctionForm = {
-			auctionId: this.auctionId,
-			auctioneerId: this.storedAuctioneer.id
+		if(this.auctionId) {
+			let auctionForm = {
+				auctionId: this.auctionId,
+				auctioneerId: this.storedAuctioneer.id
+			}
+			this.loader.loading = true
+			this.$http.post('/api/auction/', auctionForm)
+			.then((response) => {
+				this.auction = response.data
+				this.loader.loading = false
+			})
+			.catch((error) => {
+				console.log(error)
+				this.loader.loading = false
+			})		
+		} else {
+			this.$router.push({name: 'index'})
 		}
-		this.loader.loading = true
-		this.$http.post('/api/auction/', auctionForm)
-		.then((response) => {
-			this.auction = response.data
-			this.loader.loading = false
-		})
-		.catch((error) => {
-			console.log(error)
-			this.loader.loading = false
-		})		
 	},
 	methods: {
 		addToFavorites() {
@@ -105,8 +109,10 @@ export default {
 					if (error.response.status === 409) {
 						this.$notice['warning']({
 							title: 'Attention',
-							description: 'This auction has already beed added to your favorites'
+							description: 'This auction has already beed added to your favorites',
+							duration: 6
 						})
+						
 					}
 				} else {
 					this.errorMessage = 'There was an error loading the auction'

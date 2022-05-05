@@ -10,7 +10,7 @@
 
 
 			<ul v-if="auctioneerIsSignedIn" id="nav-mobile" class="right hide-on-med-and-down">
-				<li>{{ storedAuctioneer.name }}</li>
+				<li><router-link to="/profile">{{ storedAuctioneer.name }}</router-link></li>
 				<li><router-link to="/auctioneer">Auctions</router-link></li>
 				<li><a href="" @click="signout">Sign out</a></li>
 			</ul>

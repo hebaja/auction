@@ -9,9 +9,7 @@
 
 <script>
 import Navbar from './components/NavbarPanel.vue'
-
 import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged, } from "firebase/auth";
 
 const firebaseConfig = {
 	apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -30,7 +28,6 @@ export default {
 	components: {
 		Navbar,
 	},
-	
 	created() {
 	let uri = window.location.href.split('?')
 		if(uri.length == 2) {
@@ -45,59 +42,7 @@ export default {
 		this.query = getVars
 		}
 	},
-	
-	methods: {
-		deleteAccount: function() {
-			let message = 'Do you really want to delete your account?'
-			let options = {
-			okText: 'Delete',
-			cancelText: 'Cancel'
-			}
-			this.$dialog.confirm(message, options)
-			.then(() => {
-				this.deleteAccountConfirm()
-			}).catch(message => console.log(message))
-		},
-
-		deleteAccountConfirm: function() {
-			let message = 'If you delete your account, all your data will be lost.'
-			let options = {
-				okText: 'Delete my account',
-				cancelText: 'Cancel'
-			}
-			this.$dialog.confirm(message, options)
-				.then(() => {
-				const auth = getAuth()
-				onAuthStateChanged(auth, (user) => {
-					if(user) {
-						this.deleteAuctioneer.id = this.auctioneer.id
-						this.deleteAuctioneer.uid = user.uid
-						this.$http.post('/api/auctioneer/delete', this.deleteAuctioneer)
-						.then(response => {
-							if(response.status == 200) {
-								this.signOut()
-								document.location.reload(true)
-							} else {
-								console.log('unexpected response status ' + response.status)
-							}
-						})
-						.catch((error) => {
-							console.log(error)
-							if(error == 'Error: Request failed with status code 400') {
-								this.errors.push('There was a problem when trying to delete user.')
-							}
-							if(error == 'Error: Network Error') {
-								this.errors.push('Could not connect to server. Please check your internet connection.')
-							}
-						})
-					} 
-				})
-			})
-			.catch(message => console.log(message))
-		}
-	}
 }
-
 </script>
 
 <style>

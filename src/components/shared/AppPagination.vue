@@ -12,7 +12,7 @@
 			</div>
 			<ul class="collection col s12">
 				<a href="" v-for="auction in auctions" :key="auction.id" class="collection-item avatar" @click.prevent="openAuction(auction.id)">
-					<img :src="[auction.auctioneerPictureUrl ? auction.auctioneerPictureUrl : '/images/logo.svg']" alt="" class="circle">
+					<img :src="[auction.auctioneerPictureUrl ? auction.auctioneerPictureUrl : '/images/logo.svg']" alt="user profile picture" class="circle">
 					<span class="title blue-text text-darken-4"><b>{{ auction.title }}</b></span>
 					<p class="blue-text text-darken-4">
 						Lots: {{ auction.lotsQuantity}}
