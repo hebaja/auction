@@ -240,15 +240,15 @@ export default {
 	methods: {
 		openAuction(receivedAuction) {
 			this.$store.commit('DEFINE_OPEN_AUCTION_ID', receivedAuction.id)
-			this.$router.push({name: 'auction', params: {auctionId: receivedAuction.id }})
+			this.$router.push({ name: 'auction', params: { auctionId: receivedAuction.id } })
 		},
 		editAuction(receivedAuction) {
 			this.$store.commit('DEFINE_EDIT_AUCTION', receivedAuction)
-			this.$router.push({name: 'edit-auction', params: {auction: receivedAuction}})
+			this.$router.push({ name: 'edit-auction', params: { auction: receivedAuction } })
 		},
 		openGroup(receivedGroup) {
 			this.$store.commit('DEFINE_EDIT_GROUP', receivedGroup)
-			this.$router.push({name: 'edit-group', params: {group: receivedGroup}})
+			this.$router.push({ name: 'edit-group', params: { group: receivedGroup } })
 		},
 		registerAuction() {
 			this.$store.commit('RESET_EDIT_AUCTION')

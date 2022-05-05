@@ -136,7 +136,7 @@ export default {
 			.then(() => {
 				this.$modal.hide('confirmResetLotModal')
 				this.$store.commit('RESET_ACTIVE_LOT_FORM')
-				this.$router.push({name: 'auction', params: {auctionId: this.lot.id }})
+				this.$router.push({ name: 'auction' })
 			})
 			.catch((error) => {
 				console.log(error)
