@@ -1,7 +1,7 @@
 <template>
 	<div id="playerPanel" class="row" style="margin-top: 2em;">
 		<div v-if="loader.loading">
-			<div class="col s1 offset-s6">
+			<div class="col s1 offset-s5">
 				<grid-loader :loading="loader.loading" :color="loader.color" :size="loader.size" />
 			</div>
 		</div>

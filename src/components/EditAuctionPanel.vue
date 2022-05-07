@@ -114,14 +114,11 @@ export default {
 	},
 	mounted() {
 		if(!this.receivedAuction && !this.storedEditAuction) {
-			console.log('here')
 			this.errorMessage = 'There was a problem loading the auction'
 		} else if(this.receivedAuction) {
 			this.auction = this.receivedAuction
-			console.log(this.auction)
 		} else if(this.storedEditAuction) {
 			this.auction = this.storedEditAuction
-			console.log(this.auction)
 		}
 	},
 	methods: {
@@ -135,7 +132,6 @@ export default {
 				} else {
 					this.register()
 				}
-				console.log(this.auction)
 			} else {
 				this.$v.$touch()
 			}
@@ -156,7 +152,6 @@ export default {
 			})
 		},
 		register() {
-			console.log(this.auction)
 			let registerForm = {
 				auctioneerId: this.storedAuctioneer.id,
 				title: this.auction.title,

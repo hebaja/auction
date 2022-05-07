@@ -222,7 +222,6 @@ export default {
 		this.$http.get('/api/auctioneer/auctions/' + this.auctioneer.id)
 		.then((response) => {
 			this.auctioneer = response.data
-			console.log(response.data)
 		})
 		.catch((error) => {
 			console.log(error)

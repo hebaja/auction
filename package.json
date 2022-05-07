@@ -1,6 +1,6 @@
 {
-  "name": "auction-command",
-  "version": "0.1.0",
+  "name": "joy-auction",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

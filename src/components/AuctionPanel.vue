@@ -269,7 +269,7 @@ export default {
 	},
 	methods: {
 		editAuction() {
-			this.$store.commit('DEFINE_OPEN_AUCTION_ID', this.auction.id)
+			this.$store.commit('DEFINE_EDIT_AUCTION', this.auction)
 			this.$router.push({name: 'edit-auction', params: {auction: this.auction}})
 		},
 		startLot(lot) {
