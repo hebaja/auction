@@ -124,16 +124,16 @@ export default {
 					this.pagination = []
 				} else {
 					this.auctions = this.payload.content
-				this.pageRequest = this.payload.number
-				this.pagination = []
-				this.buildPagination(this.payload.totalPages, this.payload.number)
-				this.pagination.forEach((item => {
-					item.class = ''
-					item.numberClass = ''
-				}))
-				this.pagination[this.payload.number].class = 'active-page-item'
-				this.pagination[this.payload.number].numberClass = 'active-page-number'
-				this.loader.loading = false
+					this.pageRequest = this.payload.number
+					this.pagination = []
+					this.buildPagination(this.payload.totalPages, this.payload.number)
+					this.pagination.forEach((item => {
+						item.class = ''
+						item.numberClass = ''
+					}))
+					this.pagination[this.payload.number].class = 'active-page-item'
+					this.pagination[this.payload.number].numberClass = 'active-page-number'
+					this.loader.loading = false
 				}
 			})
 			.catch((error) => {
@@ -162,5 +162,16 @@ export default {
 </script>
 
 <style>
+.active-page-item {
+	background-color: #2196f3;
+	pointer-events: none;
+}
 
+.active-page-number {
+	color: white;
+}
+
+.disabled-link {
+	pointer-events: none;
+}
 </style>

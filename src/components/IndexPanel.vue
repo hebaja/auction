@@ -95,17 +95,4 @@ export default {
 	}
 }
 
-.active-page-item {
-	background-color: #2196f3;
-	pointer-events: none;
-}
-
-.active-page-number {
-	color: white;
-}
-
-.disabled-link {
-	pointer-events: none;
-}
-
 </style>
