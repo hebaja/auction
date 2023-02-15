@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "start": "node --openssl-legacy-provider server.js"
+    "build": "export SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service build",
+    "lint": "export SET NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service lint",
+    "start": "export SET NODE_OPTIONS=--openssl-legacy-provider && node server.js"
   },
   "dependencies": {
     "@growthbunker/vuesocial": "^0.1.2",
