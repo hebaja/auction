@@ -2,7 +2,8 @@ import axios from 'axios'
 import store from '@/store'
 
 const http = axios.create({
-	baseURL: process.env.VUE_APP_DEFAULT_API_BASE_URL,
+	// baseURL: process.env.VUE_APP_DEFAULT_API_BASE_URL,
+	baseURL: "https://auction-api.fly.dev/",
 	headers: {
 		'Accept': 'application/json',
 		'Content': 'application/json'
